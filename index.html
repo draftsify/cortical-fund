@@ -144,66 +144,23 @@
   .stat b{display:block;font-family:"Instrument Serif",serif;font-weight:400;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
   .stat span{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-3);letter-spacing:.05em;text-transform:uppercase}
 
-  /* ── SECTION HEADS ─────────────────────── */
-  .head{text-align:center;padding:70px 24px 0;max-width:600px;margin:0 auto}
-  h2{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:clamp(30px,4.4vw,42px);line-height:1.1;letter-spacing:-.01em}
-  .head p{margin-top:12px;color:var(--ink-2);font-size:15px}
-  .pill{
-    display:inline-flex;height:24px;align-items:center;padding:0 11px;border-radius:12px;
-    background:var(--ink);color:var(--bg);font-family:"JetBrains Mono",monospace;font-size:10.5px;
-    letter-spacing:.06em;margin-bottom:16px;
-  }
-
-  /* ── STEPS ─────────────────────────────── */
-  .steps{display:grid;grid-template-columns:repeat(2,1fr);gap:0;padding:44px 24px 70px;max-width:940px;margin:0 auto}
-  .step{border:1px dashed var(--line-2);padding:30px 26px 26px;background:var(--panel);position:relative;overflow:hidden}
-  .steps .step:nth-child(1),.steps .step:nth-child(3){border-right:0}
-  .steps .step:nth-child(1),.steps .step:nth-child(2){border-bottom:0}
-  /* ascii icon: a sharp plate over a blurred copy of itself, which is
-     what gives it the glow rather than a flat text-shadow            */
-  .ico{position:relative;height:176px;margin-bottom:26px}
-  .ico pre{
-    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);margin:0;
-    font-family:"JetBrains Mono",ui-monospace,monospace;
-    font-size:11px;line-height:1.02;white-space:pre;
-    color:var(--ink);user-select:none;
-  }
-  .ico pre:first-child{filter:blur(11px);opacity:.5}
-  .ico pre:last-child{opacity:.9}
-  .step h3{font-size:16px;font-weight:600;letter-spacing:-.005em}
-  .step p{margin-top:7px;color:var(--ink-2);font-size:14px}
-  .num{position:absolute;top:22px;right:24px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3)}
-
-  /* ── FAQ ───────────────────────────────── */
-  .faq-sec{display:grid;grid-template-columns:.85fr 1.15fr;gap:56px;max-width:1000px;margin:0 auto;padding:74px 24px 80px;align-items:start}
-  .faq-sec h2{text-align:left}
-  .faq-sec .lead{margin-top:12px;color:var(--ink-2);font-size:15px}
-  .mailto{
-    display:inline-flex;align-items:center;gap:9px;margin-top:22px;height:38px;padding:0 15px;
-    border-radius:19px;background:var(--ink);color:var(--bg);font-family:"JetBrains Mono",monospace;font-size:12px;
-  }
-  .acc{border:1px dashed var(--line-2);background:var(--panel);margin-bottom:8px}
-  .acc summary{
-    list-style:none;cursor:pointer;padding:17px 20px;display:flex;justify-content:space-between;
-    align-items:center;gap:16px;font-size:15px;font-weight:500;
-  }
-  .acc summary::-webkit-details-marker{display:none}
-  .acc summary::after{content:"+";font-family:"JetBrains Mono",monospace;color:var(--ink-3);font-size:16px;transition:.2s}
-  .acc[open] summary::after{transform:rotate(45deg)}
-  .acc p{padding:0 20px 18px;color:var(--ink-2);font-size:14px;max-width:92%}
-  .acc code{font-family:"JetBrains Mono",monospace;font-size:12px;background:rgba(255,247,210,.09);padding:2px 6px;border-radius:4px;word-break:break-all}
-
-  /* ── CTA BAND ──────────────────────────── */
-  .band{padding:78px 24px 84px;text-align:center}
-  .trust{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:26px}
-  .trust div{
-    display:flex;align-items:center;gap:8px;border:1px dashed var(--line-2);background:var(--panel);
-    padding:9px 14px;font-size:13px;color:var(--ink-2);
-  }
-  .trust b{width:6px;height:6px;background:var(--ink);border-radius:1px;display:block}
-
   /* ── FOOTER ────────────────────────────── */
+  /* the plate is already navy and cream, so it only needs to be dissolved
+     into the page at its lower edge rather than tinted                */
+  .f-art{position:relative;z-index:1;line-height:0;border-top:1px solid var(--line)}
+  .f-art img{
+    display:block;width:100%;height:clamp(190px,27vw,380px);
+    object-fit:cover;object-position:50% 42%;
+  }
+  .f-art::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,
+      rgba(0,19,33,.30) 0%, rgba(0,19,33,0) 26%,
+      rgba(0,19,33,.80) 78%, var(--bg) 100%);
+  }
   footer{padding:44px 24px 26px;max-width:var(--maxw);margin:0 auto}
+  .f-ca{margin-top:14px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3)}
+  .f-ca code{font-family:inherit;word-break:break-all;color:var(--ink-2)}
   .f-top{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap}
   .f-logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
   .f-logo .mark{height:16px}
@@ -218,10 +175,6 @@
 
   /* ── RESPONSIVE ────────────────────────── */
   @media(max-width:860px){
-    .faq-sec{grid-template-columns:1fr;gap:28px}
-    .steps{grid-template-columns:1fr}
-    .steps .step{border:1px dashed var(--line-2)!important;border-bottom:0!important}
-    .steps .step:last-child{border-bottom:1px dashed var(--line-2)!important}
     .stats{grid-template-columns:1fr}
     .stat{border-right:0;border-bottom:1px dashed var(--line-2)}
     .stat:last-child{border-bottom:0}
@@ -239,7 +192,6 @@
 <nav>
   <div class="nav-in">
     <div class="nav-links">
-      <a class="nl" href="#how"><b>[</b>How it works<b>]</b></a>
       <a class="nl" href="#raised"><b>[</b>Raised<b>]</b></a>
     </div>
     <a class="logo" href="#" aria-label="Cortical Fund">
@@ -251,7 +203,7 @@
       </svg>
     </a>
     <div class="nav-links right">
-      <a class="nl" href="#faq"><b>[</b>FAQ<b>]</b></a>
+      <a class="nl" href="mailto:hello@cortical.fund"><b>[</b>Contact<b>]</b></a>
     </div>
   </div>
 </nav>
@@ -264,7 +216,8 @@
       <h1>Funding computers grown from living neurons.</h1>
       <p class="sub">Trading fees are distributed to Cortical Labs.</p>
       <div class="cta">
-        <a class="btn btn-p" href="#how">How it works</a>
+        <a class="btn btn-p" href="#">Buy $CTX</a>
+        <a class="btn btn-s" href="#raised">See the numbers</a>
       </div>
     </div>
   </section>
@@ -287,99 +240,12 @@
     </div>
   </section>
 
-  <!-- ══ HOW IT WORKS ══ -->
-  <div id="how">
-    <div class="head">
-      <div class="pill">MECHANISM</div>
-      <h2>Volume in. Neurons out.</h2>
-      <p>No pledges, no promises, no discretionary treasury. The contribution is a mechanical consequence of trading.</p>
-    </div>
-    <section>
-      <div class="steps">
-        <div class="step">
-          <span class="num">01</span>
-          <div class="ico" data-ico="swap"><pre></pre><pre></pre></div>
-          <h3>Someone trades $CTX</h3>
-          <p>Every swap carries a 1% pool fee. The launchpad splits it between the token's creator and the platform. The fund receives the creator's 70% share.</p>
-        </div>
-        <div class="step">
-          <span class="num">02</span>
-          <div class="ico" data-ico="stack"><pre></pre><pre></pre></div>
-          <h3>Fees accrue on-chain</h3>
-          <p>The creator share accumulates in a fee position no one can withdraw to a personal wallet. It sits in public view, block by block.</p>
-        </div>
-        <div class="step">
-          <span class="num">03</span>
-          <div class="ico" data-ico="claim"><pre></pre><pre></pre></div>
-          <h3>Claimed every Monday</h3>
-          <p>The position is claimed on a weekly cadence and converted to stablecoins. Every claim settles as a public transaction on-chain.</p>
-        </div>
-        <div class="step">
-          <span class="num">04</span>
-          <div class="ico" data-ico="target"><pre></pre><pre></pre></div>
-          <h3>Wired to Cortical Labs</h3>
-          <p>Funds are sent as an unrestricted research contribution: hardware, wetware consumables, and CL1 units for independent labs.</p>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ══ FAQ ══ -->
-  <section id="faq">
-    <div class="faq-sec">
-      <div>
-        <div class="pill">ANSWERS</div>
-        <h2>Before you buy.</h2>
-        <p class="lead">Plain answers, including the ones that don't help us. Read the risk section twice.</p>
-        <a class="mailto" href="mailto:hello@cortical.fund">hello@cortical.fund</a>
-      </div>
-      <div>
-        <details class="acc" open>
-          <summary>What is Cortical Fund?</summary>
-          <p>Cortical Fund is a token. Trading it generates pool fees, and the intent of this project is to periodically claim those fees and contribute them to Cortical Labs, the company building CL1, a computer that runs on living human neurons cultured on a silicon chip.</p>
-        </details>
-        <details class="acc">
-          <summary>How do trading fees turn into contributions?</summary>
-          <p>Every trade carries a 1% pool fee, which the launchpad splits between the token's creator and the platform. The fund receives the creator's 70% share. That share is claimed weekly, converted to stablecoins, and wired out. Both the claim and the transfer are visible on-chain.</p>
-        </details>
-        <details class="acc">
-          <summary>Why Cortical Labs?</summary>
-          <p>Because synthetic biological intelligence is one of the few compute frontiers that isn't already flooded with capital. Neurons learn from vastly less data and run on a fraction of the energy of silicon. Cortical Labs put the first commercial biological computer in the world on the market. That work deserves a funding stream that doesn't depend on a quarterly cycle.</p>
-        </details>
-        <details class="acc">
-          <summary>What are the risks of buying the token?</summary>
-          <p>The token can lose value, including all of its value. Buying it is not a donation, it is not tax-deductible, and it gives you no claim on the fund, on Cortical Labs, or on anything else. If fees stop, contributions stop. Assume you may lose everything you put in.</p>
-        </details>
-        <details class="acc">
-          <summary>Do holders receive anything in return?</summary>
-          <p>No. Holding $CTX does not entitle you to dividends, revenue share, redemption rights, equity, hardware, or any say in how the project is run. The only thing it produces is fees, and the fees are not yours.</p>
-        </details>
-        <details class="acc">
-          <summary>What is the contract address?</summary>
-          <p>$CTX is <code>0x0000000000000000000000000000000000000000</code>. Verify it against this page before trading. Anything you find elsewhere is a fake.</p>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ CTA BAND ══ -->
-  <section class="band">
-    <h2>Turn volume into wetware.</h2>
-    <p class="sub" style="margin-top:14px">Trade it, hold it, or ignore it. The neurons don't care which. They only see the wire transfer.</p>
-    <div class="cta">
-      <a class="btn btn-a" href="#">Buy $CTX</a>
-      <a class="btn btn-s" href="#faq">Read the FAQ</a>
-    </div>
-    <div class="trust">
-      <div><b></b>No presale, no team allocation</div>
-      <div><b></b>Fees claimed on a public schedule</div>
-      <div><b></b>Every transfer hash published</div>
-    </div>
-  </section>
-
 </div>
 
 <!-- ══ FOOTER ══ -->
+<figure class="f-art" aria-hidden="true">
+  <img src="clouds.png" alt="" width="2752" height="1536" loading="lazy" decoding="async" />
+</figure>
 <footer>
   <div class="f-top">
     <div>
@@ -393,16 +259,12 @@
         Cortical Fund
       </div>
       <p class="f-desc">A fee-funded contribution stream for synthetic biological intelligence research.</p>
+      <p class="f-ca">$CTX <code>0x0000000000000000000000000000000000000000</code></p>
     </div>
     <div class="f-cols">
       <div class="f-col">
-        <h4>Protocol</h4>
-        <a href="#how">How it works</a>
+        <h4>Links</h4>
         <a href="#raised">Raised</a>
-      </div>
-      <div class="f-col">
-        <h4>Resources</h4>
-        <a href="#faq">FAQ</a>
         <a href="https://corticallabs.com" target="_blank" rel="noopener">Cortical Labs</a>
         <a href="mailto:hello@cortical.fund">Contact</a>
       </div>
@@ -569,65 +431,6 @@ if (CFG.liveDrip) setInterval(() => {
   if (revealed) render(false);
 }, 5200);
 
-/* ── STEP ICONS ───────────────────────────────
-   drawn from signed distance fields rather than typed by hand, so the
-   four read as one set: same stroke weight, same soft edge     */
-(function(){
-  const COLS = 36, ROWS = 16, RAMP = " .:-=+*#%@", SOFT = .020;
-  const cap  = (a, b, r) => ({t:"c", a, b, r});
-  const disc = (c, r)    => ({t:"d", c, r});
-  const ring = (c, R, w) => ({t:"r", c, R, w});
-
-  const SET = {
-    /* two arrows passing each other: a swap */
-    swap: [cap([.20,.25],[.72,.25],.030), cap([.72,.25],[.60,.15],.030),
-           cap([.72,.25],[.60,.35],.030),
-           cap([.80,.50],[.28,.50],.030), cap([.28,.50],[.40,.40],.030),
-           cap([.28,.50],[.40,.60],.030)],
-    /* bars widening downward: a position building up */
-    stack: [cap([.38,.16],[.62,.16],.046), cap([.30,.335],[.70,.335],.046),
-            cap([.22,.51],[.78,.51],.046)],
-    /* arrow landing on a floor: the weekly claim */
-    claim: [cap([.50,.10],[.50,.40],.034), cap([.50,.46],[.34,.30],.034),
-            cap([.50,.46],[.66,.30],.034), cap([.20,.63],[.80,.63],.034)],
-    /* concentric rings closing on a core: the destination */
-    target: [disc([.50,.375],.062), ring([.50,.375],.155,.026),
-             ring([.50,.375],.245,.024)]
-  };
-
-  const sdf = (p, x, y) => {
-    if (p.t === "d") return Math.hypot(x - p.c[0], y - p.c[1]) - p.r;
-    if (p.t === "r") return Math.abs(Math.hypot(x - p.c[0], y - p.c[1]) - p.R) - p.w;
-    const vx = p.b[0] - p.a[0], vy = p.b[1] - p.a[1];
-    const L2 = vx*vx + vy*vy || 1e-9;
-    let u = ((x - p.a[0]) * vx + (y - p.a[1]) * vy) / L2;
-    u = u < 0 ? 0 : u > 1 ? 1 : u;
-    return Math.hypot(x - (p.a[0] + u*vx), y - (p.a[1] + u*vy)) - p.r;
-  };
-
-  function draw(prims){
-    const H = ROWS * 1.02 / (COLS * .6), out = [], L = RAMP.length - 1;
-    for (let y = 0; y < ROWS; y++){
-      let line = "";
-      for (let x = 0; x < COLS; x++){
-        const px = (x + .5) / COLS, py = ((y + .5) / ROWS) * H;
-        let d = 1e9;
-        for (const p of prims){ const s = sdf(p, px, py); if (s < d) d = s; }
-        let cov = .5 - d / (2 * SOFT);
-        cov = cov < 0 ? 0 : cov > 1 ? 1 : cov;
-        line += RAMP[Math.round(cov * L)];
-      }
-      out.push(line);
-    }
-    return out.join("\n");
-  }
-
-  for (const el of document.querySelectorAll(".ico")){
-    const art = draw(SET[el.dataset.ico] || SET.target);
-    for (const pre of el.querySelectorAll("pre")) pre.textContent = art;
-  }
-})();
-
 /* ── SMOOTH SCROLL ────────────────────────────
    wheel only: touch, keyboard and scrollbar drags stay native  */
 (function(){
@@ -668,9 +471,8 @@ if (CFG.liveDrip) setInterval(() => {
 
 /* ── REVEAL ON SCROLL ─────────────────────────*/
 (function(){
-  const SEL = "h1,.sub,.cta,.big,.big-sub,.bar,.bar-lab,.stat,.pill,.head h2,.head p," +
-              ".step,.acc,.faq-sec h2,.faq-sec .lead,.mailto,.band h2," +
-              ".trust div,.f-logo,.f-desc,.f-col,.disc,.copy";
+  const SEL = "h1,.sub,.cta,.big,.big-sub,.bar,.bar-lab,.stat," +
+              ".f-logo,.f-desc,.f-ca,.f-col,.disc,.copy";
   const els = [...document.querySelectorAll(SEL)];
   els.forEach(el => el.setAttribute("data-rv", ""));   // tagged in JS so a
                                                        // script failure can't
