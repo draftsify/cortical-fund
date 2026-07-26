@@ -90,14 +90,14 @@
   .nl{font-size:13px;color:var(--ink-2);transition:color .2s;white-space:nowrap}
   .nl:hover{color:var(--ink)}
   .nl b{font-family:"JetBrains Mono",monospace;font-weight:400;color:var(--ink-3);opacity:.55}
-  .social{display:flex;gap:8px;align-items:center}
+  /* bare glyphs: the box stays only to keep a 30px tap target */
+  .social{display:flex;gap:4px;align-items:center;margin-left:-7px}
   .social a{
     display:flex;align-items:center;justify-content:center;
-    width:32px;height:32px;border-radius:50%;
-    border:1px solid var(--line-2);color:var(--ink-2);transition:.18s;
+    width:30px;height:30px;color:var(--ink-3);transition:color .18s;
   }
-  .social a:hover{color:var(--bg);background:var(--ink);border-color:var(--ink)}
-  .social svg{width:14px;height:14px;fill:currentColor;display:block}
+  .social a:hover{color:var(--ink)}
+  .social svg{width:16px;height:16px;fill:currentColor;display:block}
   .logo{display:flex;align-items:center}
   .mark{display:block;width:auto;fill:currentColor;color:var(--ink)}
   .logo .mark{height:19px}
