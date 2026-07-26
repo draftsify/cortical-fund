@@ -63,15 +63,47 @@
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
   .frame{border-left:1px solid var(--line);border-right:1px solid var(--line)}
 
-  /* ── ASCII BACKDROP ────────────────────── */
-  #ascii{
-    position:fixed;inset:0;z-index:0;margin:0;
-    font-family:"JetBrains Mono",ui-monospace,monospace;
-    line-height:1.02;white-space:pre;overflow:hidden;
-    color:rgba(255,247,210,.26);user-select:none;pointer-events:none;
-  }
+  /* ── AURORA ────────────────────────────────
+     five soft light pools drifting on incommensurate cycles, so the
+     composition never visibly repeats. no blur filter and no JS: each
+     pool is a gradient-painted layer moved by transform alone, which
+     the compositor handles on the GPU for free                     */
+  .aurora{position:fixed;inset:-25%;z-index:0;pointer-events:none;overflow:hidden}
+  .aurora i{position:absolute;display:block;border-radius:50%;will-change:transform}
+  .a1{width:80vmax;height:80vmax;left:-16%;top:-20%;
+      background:radial-gradient(circle,rgba(255,247,210,.19),rgba(255,247,210,0) 66%);
+      animation:dr1 38s ease-in-out infinite}
+  .a2{width:64vmax;height:64vmax;right:-12%;top:-8%;
+      background:radial-gradient(circle,rgba(255,247,210,.14),rgba(255,247,210,0) 64%);
+      animation:dr2 47s ease-in-out infinite}
+  .a3{width:72vmax;height:72vmax;left:16%;bottom:-26%;
+      background:radial-gradient(circle,rgba(255,247,210,.12),rgba(255,247,210,0) 65%);
+      animation:dr3 41s ease-in-out infinite}
+  .a4{width:48vmax;height:48vmax;left:36%;top:14%;
+      background:radial-gradient(circle,rgba(255,247,210,.17),rgba(255,247,210,0) 62%);
+      animation:dr4 33s ease-in-out infinite}
+  .a5{width:58vmax;height:58vmax;right:4%;bottom:-16%;
+      background:radial-gradient(circle,rgba(255,247,210,.10),rgba(255,247,210,0) 66%);
+      animation:dr5 55s ease-in-out infinite}
+  @keyframes dr1{0%,100%{transform:translate(0,0) scale(1)}
+                 34%{transform:translate(15vw,13vh) scale(1.18)}
+                 67%{transform:translate(-7vw,24vh) scale(.88)}}
+  @keyframes dr2{0%,100%{transform:translate(0,0) scale(1)}
+                 30%{transform:translate(-19vw,16vh) scale(.86)}
+                 65%{transform:translate(-9vw,-11vh) scale(1.22)}}
+  @keyframes dr3{0%,100%{transform:translate(0,0) scale(1)}
+                 38%{transform:translate(21vw,-18vh) scale(1.14)}
+                 72%{transform:translate(6vw,-6vh) scale(.9)}}
+  @keyframes dr4{0%,100%{transform:translate(0,0) scale(1)}
+                 29%{transform:translate(-14vw,20vh) scale(1.26)}
+                 63%{transform:translate(18vw,7vh) scale(.84)}}
+  @keyframes dr5{0%,100%{transform:translate(0,0) scale(1)}
+                 41%{transform:translate(-23vw,-14vh) scale(1.1)}
+                 76%{transform:translate(-5vw,-24vh) scale(.92)}}
+  @media(prefers-reduced-motion:reduce){.aurora i{animation:none}}
+
   nav,.frame,footer{position:relative;z-index:1}
-  /* content floats over the culture — the hero stays clear so it reads through */
+  /* content floats over the light — the hero stays clear so it reads through */
   .counter,#how,#ledger,#faq,.band,footer{background:rgba(0,19,33,.88)}
 
   /* ── REVEAL ────────────────────────────── */
@@ -113,11 +145,11 @@
   section{border-bottom:1px solid var(--line);position:relative}
   .hero{min-height:76vh;display:flex;align-items:center;padding:104px 0 96px}
   .h-head{max-width:640px;margin:0 auto;text-align:center;padding:0 24px;position:relative}
-  /* pulls the field down behind the headline so the type stays crisp */
+  /* settles the light behind the headline so the type keeps its contrast */
   .h-head::before{
-    content:"";position:absolute;inset:-24% -30%;z-index:-1;
+    content:"";position:absolute;inset:-28% -34%;z-index:-1;
     background:radial-gradient(ellipse at center,
-      rgba(0,19,33,.95) 0%, rgba(0,19,33,.86) 42%, rgba(0,19,33,0) 72%);
+      rgba(0,19,33,.72) 0%, rgba(0,19,33,.52) 45%, rgba(0,19,33,0) 74%);
   }
   h1{
     font-family:"Instrument Serif",Georgia,serif;
@@ -262,8 +294,10 @@
 </head>
 <body>
 
-<!-- ══ ASCII BACKDROP ══ -->
-<pre id="ascii" aria-hidden="true"></pre>
+<!-- ══ AURORA ══ -->
+<div class="aurora" aria-hidden="true">
+  <i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i><i class="a5"></i>
+</div>
 
 <!-- ══ GRAIN ══ -->
 <div class="grain" aria-hidden="true"></div>
@@ -542,182 +576,6 @@ document.getElementById("ledgerBody").innerHTML = ROWS.map(r => `
     <td class="mono hide-sm" style="color:var(--ink-3)">${r[2]}</td>
     <td style="text-align:right"><a class="tx" href="#">${r[3]} &#8599;</a></td>
   </tr>`).join("");
-
-/* ── ASCII BRAND FIELD ────────────────────────
-   the mark itself, at monumental scale: the emitter drives a decaying
-   electrode lattice, and pulses sweep outward through it, swelling
-   each site as they pass                                            */
-(function(){
-  const pre  = document.getElementById("ascii");
-  const RAMP = " .:-=+*#%@";
-  const CALM = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* the mark, in width-normalised units */
-  const XT = .045, XR = .225, HORN = .125, ROUND = .014;  // tip, right edge, spread
-  const BITE_C = .375, BITE_R = .175;                     // the concave notch
-  const EDGE = Math.hypot(XR - XT, HORN);
-  const SOFT = .0055;                                     // one character of feather
-
-  /* the pulse train leaving the emitter, plus a weaker return wave */
-  const P1 = 1.62, S1 = .40, W1 = .175;
-  const P2 = 2.71, S2 = .27, W2 = .205;
-
-  let cols = 0, rows = 0, SA = .5, yc = .25;
-  let wIdx = null, wVal = null;          // baked emitter coverage
-  let DOT = [], px = null;
-  const buf = [];
-
-  /* signed distance to the mark: a rounded triangle with a bite taken out */
-  function sdMark(x, y){
-    const dy = y - yc, ex = XR - XT, px_ = x - XT;
-    const top = -(ex * dy + HORN * px_) / EDGE;
-    const bot =  (ex * dy - HORN * px_) / EDGE;
-    const tri = Math.max(top, bot, x - XR) - ROUND;
-    return Math.max(tri, BITE_R - Math.hypot(x - BITE_C, dy));
-  }
-
-  /* the lattice: sites thin out to the right and away from the axis,
-     exactly the way the mark's dots do                              */
-  function layout(){
-    DOT = [];
-    yc = SA * .5;
-    const x0 = .30, d = .062;
-    const N  = Math.max(4, Math.ceil((1.04 - x0) / d));
-    const M  = 2 * Math.max(1, Math.floor(SA / (2 * d))) + 1;
-    const jc = (M - 1) / 2;
-    let s = 0x2f6b1d3;
-    const rnd = () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
-
-    for (let i = 0; i < N; i++){
-      const hx = Math.exp(-(i / (N - 1)) * 1.35);
-      for (let j = 0; j < M; j++){
-        const h = hx * Math.exp(-(Math.abs(j - jc) / jc) * 1.5);
-        const sx = x0 + i * d, sy = yc + (j - jc) * d;
-        DOT.push({
-          x: sx,
-          y: sy,
-          d: Math.hypot(sx - XR, sy - yc),   // range from the emitter mouth
-          r: .0110 * h + .0033,          // a site never quite disappears
-          g: .30 + .58 * h,
-          att: .38 + .62 * hx,            // distant sites still answer the pulse
-          jit: (rnd() - .5) * .026,       // ragged wavefront, not a metronome
-          ph: rnd() * 6.283
-        });
-      }
-    }
-  }
-
-  /* how hard a site sitting d away from the emitter mouth is being driven.
-     the front is a circle, not a plane, so the sweep bows outward the way
-     a real burst spreads through a culture                              */
-  const FAR = 1.35;
-  function drive(d, time){
-    let f = 0;
-    for (let k = -1; k <= 1; k++){
-      const n = Math.floor((time - d / S1) / P1) + k;
-      const r = S1 * (time - n * P1), df = Math.abs(d - r);
-      if (r >= 0 && r <= FAR && df < W1){ const u = 1 - df / W1; f += u * u; }
-    }
-    for (let k = -1; k <= 1; k++){        // the reflection, running back inward
-      const n = Math.floor((time - (FAR - d) / S2) / P2) + k;
-      const r = FAR - S2 * (time - n * P2), df = Math.abs(d - r);
-      if (r >= 0 && r <= FAR && df < W2){ const u = 1 - df / W2; f += .42 * u * u; }
-    }
-    return f;
-  }
-
-  function size(){
-    const ch = innerWidth < 620 ? 6.2 : 8.4, fs = ch / .6;
-    pre.style.fontSize = fs + "px";
-    cols = Math.max(30, Math.ceil(innerWidth  / ch));
-    rows = Math.max(20, Math.ceil(innerHeight / (fs * 1.02)));
-    SA   = (rows * fs * 1.02) / (cols * ch);
-    px   = new Float32Array(cols * rows);
-    layout();
-    bakeMark();
-  }
-
-  /* the emitter never moves — burn its coverage into a sparse list once */
-  function bakeMark(){
-    const idx = [], val = [];
-    const x1 = Math.min(cols - 1, Math.ceil((XR + ROUND + SOFT) * cols));
-    const yA = Math.max(0, ((yc - HORN - ROUND - SOFT) / SA * rows) | 0);
-    const yB = Math.min(rows - 1, Math.ceil((yc + HORN + ROUND + SOFT) / SA * rows));
-    for (let y = yA; y <= yB; y++)
-      for (let x = 0; x <= x1; x++){
-        const c = -sdMark(x / cols, (y / rows) * SA) / SOFT;
-        if (c <= .02) continue;
-        idx.push(y * cols + x);
-        val.push(c > 1 ? 1 : c);
-      }
-    wIdx = Int32Array.from(idx);
-    wVal = Float32Array.from(val);
-  }
-
-  /* a site: quadratic falloff to a hard edge, so it reads as a round dot */
-  function site(cx, cy, rad, gain){
-    const reach = Math.max(rad, 1.05 / cols) * 1.75, inv = 1 / reach;
-    const x0 = Math.max(0, ((cx - reach) * cols) | 0);
-    const x1 = Math.min(cols - 1, Math.ceil((cx + reach) * cols));
-    const y0 = Math.max(0, ((cy - reach) / SA * rows) | 0);
-    const y1 = Math.min(rows - 1, Math.ceil((cy + reach) / SA * rows));
-    for (let y = y0; y <= y1; y++)
-      for (let x = x0; x <= x1; x++){
-        const dx = x / cols - cx, dy = (y / rows) * SA - cy;
-        const d = Math.sqrt(dx*dx + dy*dy);
-        if (d >= reach) continue;
-        const t = 1 - d * inv, v = gain * t * t, i = y * cols + x;
-        if (v > px[i]) px[i] = v;
-      }
-  }
-
-  function frame(t){
-    const time = t * .001;
-    px.fill(0);
-
-    /* the emitter flares as each pulse leaves it */
-    const fire = Math.max(0, 1 - (time % P1) / .24);
-    const wg = 1.02 + .38 * fire * fire;
-    for (let i = 0; i < wIdx.length; i++) px[wIdx[i]] = wVal[i] * wg;
-
-    for (const dt of DOT){
-      const f = drive(dt.d + dt.jit, time) * dt.att;
-      const breathe = .92 + .08 * Math.sin(time * .85 + dt.ph);
-      /* additive swell: every site gains the same absolute radius, so the
-         faint far sites erupt while the big near ones stay separated  */
-      site(dt.x, dt.y, dt.r + .018 * f, dt.g * breathe * (1 + 1.55 * f));
-    }
-
-    buf.length = 0;
-    const L = RAMP.length - 1;
-    for (let y = 0; y < rows; y++){
-      let line = "";
-      for (let x = 0; x < cols; x++){
-        const v = px[y * cols + x];
-        if (v < .1){ line += " "; continue; }
-        const i = (v * RAMP.length) | 0;
-        line += RAMP[i > L ? L : i];
-      }
-      buf.push(line);
-    }
-    pre.textContent = buf.join("\n");
-  }
-
-  let last = 0;
-  function loop(t){
-    if (t - last > 52){ last = t; frame(t); }
-    requestAnimationFrame(loop);
-  }
-
-  let rt;
-  addEventListener("resize", () => {
-    clearTimeout(rt);
-    rt = setTimeout(() => { size(); if (CALM) frame(0); }, 160);
-  });
-
-  size();
-  if (CALM) frame(0); else requestAnimationFrame(loop);
-})();
 
 /* ── SMOOTH SCROLL ────────────────────────────
    wheel only — touch, keyboard and scrollbar drags stay native  */
