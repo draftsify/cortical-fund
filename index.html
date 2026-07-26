@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cortical Fund — Trading fees, funding neurons.</title>
+<meta name="description" content="An independent protocol that routes on-chain trading fees directly into Cortical Labs — the lab growing living human neurons on silicon." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f5f5;
+    --panel:#f7f7f7;
+    --ink:#0a0a0a;
+    --ink-2:#545454;
+    --ink-3:#787878;
+    --line:#dedede;
+    --line-2:#d1d1d1;
+    --accent:#3455fa;
+    --blue:#00a2ff;
+    --magenta:#ff4ffc;
+    --teal:#47e6c3;
+    --amber:#ffbd2e;
+    --maxw:1180px;
+    --pad:28px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:15px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:.01em;
+  }
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--ink);color:var(--bg)}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .frame{border-left:1px solid var(--line);border-right:1px solid var(--line)}
+
+  /* ── NAV ───────────────────────────────── */
+  nav{position:sticky;top:0;z-index:60;background:rgba(245,245,245,.86);backdrop-filter:blur(10px)}
+  .nav-in{
+    max-width:var(--maxw);margin:0 auto;height:66px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;border-bottom:1px solid var(--line);
+    border-left:1px solid var(--line);border-right:1px solid var(--line);
+  }
+  .nav-links{display:flex;gap:22px;flex:1}
+  .nav-links.right{justify-content:flex-end}
+  .nl{font-size:13px;color:var(--ink-2);transition:color .2s;white-space:nowrap}
+  .nl:hover{color:var(--ink)}
+  .nl b{font-family:"JetBrains Mono",monospace;font-weight:400;color:var(--ink-3);opacity:.55}
+  .logo{display:flex;gap:3px;align-items:center}
+  .logo i{display:block;width:8px;height:22px;background:var(--ink);border-radius:5px;animation:bar 2.6s ease-in-out infinite}
+  .logo i:nth-child(2){animation-delay:.35s}
+  @keyframes bar{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.62)}}
+
+  /* ── HERO ──────────────────────────────── */
+  section{border-bottom:1px solid var(--line)}
+  .hero{padding:86px 0 0}
+  .h-head{max-width:640px;margin:0 auto;text-align:center;padding:0 24px}
+  h1{
+    font-family:"Instrument Serif",Georgia,serif;
+    font-weight:400;font-size:clamp(44px,6.4vw,74px);
+    line-height:1.02;letter-spacing:-.012em;
+  }
+  h1 em{font-style:italic}
+  .sub{margin-top:18px;color:var(--ink-2);font-size:15.5px;max-width:470px;margin-left:auto;margin-right:auto}
+  .cta{display:flex;gap:9px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    height:38px;padding:0 17px;border-radius:19px;
+    font-size:13.5px;font-weight:500;transition:.18s;border:1px solid transparent;
+  }
+  .btn-p{background:var(--ink);color:#fff}
+  .btn-p:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.18)}
+  .btn-s{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.1)}
+  .btn-s:hover{background:rgba(0,0,0,.09)}
+  .btn-a{background:var(--accent);color:#fff}
+  .btn-a:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(52,85,250,.32)}
+
+  /* ASCII stage */
+  .stage{position:relative;margin-top:44px;padding:56px 0 24px}
+  .corner{position:absolute;width:16px;height:16px;border:1px solid var(--line-2)}
+  .c-tl{top:34px;left:8%;border-right:0;border-bottom:0}
+  .c-tr{top:34px;right:8%;border-left:0;border-bottom:0}
+  .c-bl{bottom:6px;left:8%;border-right:0;border-top:0}
+  .c-br{bottom:6px;right:8%;border-left:0;border-top:0}
+  #ascii{
+    font-family:"JetBrains Mono",ui-monospace,monospace;
+    font-size:9px;line-height:1.02;white-space:pre;
+    text-align:center;color:#1a1a1a;user-select:none;
+    margin:0 auto;display:block;overflow:hidden;
+  }
+
+  /* ── MARQUEE ───────────────────────────── */
+  .mq{padding:22px 0;overflow:hidden;position:relative}
+  .mq-lab{text-align:center;font-size:12.5px;color:var(--ink-3);margin-bottom:16px}
+  .mq-track{display:flex;gap:46px;width:max-content;animation:slide 34s linear infinite}
+  .mq:hover .mq-track{animation-play-state:paused}
+  @keyframes slide{to{transform:translateX(-50%)}}
+  .mq-item{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink-2);font-weight:500;white-space:nowrap}
+  .mq-item span{width:5px;height:5px;border-radius:50%;background:var(--ink);opacity:.35}
+  .mq::before,.mq::after{content:"";position:absolute;top:0;bottom:0;width:110px;z-index:2;pointer-events:none}
+  .mq::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+  .mq::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
+
+  /* ── COUNTER ───────────────────────────── */
+  .counter{padding:74px 24px 78px;text-align:center}
+  .tag{
+    display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 12px;
+    border-radius:13px;background:var(--ink);color:#fff;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.04em;
+  }
+  .live{width:6px;height:6px;border-radius:50%;background:#5ee39b;animation:blip 1.6s ease-in-out infinite}
+  @keyframes blip{0%,100%{opacity:1}50%{opacity:.25}}
+  .big{
+    font-family:"Instrument Serif",Georgia,serif;font-weight:400;
+    font-size:clamp(58px,12vw,132px);line-height:1;letter-spacing:-.02em;
+    margin:22px 0 6px;font-variant-numeric:tabular-nums;
+  }
+  .big-sub{color:var(--ink-2);font-size:15px;max-width:440px;margin:0 auto}
+  .bar{max-width:520px;margin:34px auto 12px;height:6px;background:rgba(0,0,0,.07);border-radius:3px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--ink);border-radius:3px;transition:width 1.6s cubic-bezier(.2,.7,.2,1)}
+  .bar-lab{display:flex;justify-content:space-between;max-width:520px;margin:0 auto;
+    font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3)}
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);max-width:720px;margin:46px auto 0;
+    border:1px dashed var(--line-2);background:var(--panel);
+  }
+  .stat{padding:22px 16px;border-right:1px dashed var(--line-2)}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font-family:"Instrument Serif",serif;font-weight:400;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+  .stat span{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-3);letter-spacing:.05em;text-transform:uppercase}
+
+  /* ── SECTION HEADS ─────────────────────── */
+  .head{text-align:center;padding:70px 24px 0;max-width:600px;margin:0 auto}
+  h2{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:clamp(30px,4.4vw,42px);line-height:1.1;letter-spacing:-.01em}
+  .head p{margin-top:12px;color:var(--ink-2);font-size:15px}
+  .pill{
+    display:inline-flex;height:24px;align-items:center;padding:0 11px;border-radius:12px;
+    background:var(--ink);color:#fff;font-family:"JetBrains Mono",monospace;font-size:10.5px;
+    letter-spacing:.06em;margin-bottom:16px;
+  }
+
+  /* ── STEPS ─────────────────────────────── */
+  .steps{display:grid;grid-template-columns:repeat(2,1fr);gap:0;padding:44px 24px 70px;max-width:940px;margin:0 auto}
+  .step{border:1px dashed var(--line-2);padding:30px 26px 26px;background:var(--panel);position:relative;overflow:hidden}
+  .steps .step:nth-child(1),.steps .step:nth-child(3){border-right:0}
+  .steps .step:nth-child(1),.steps .step:nth-child(2){border-bottom:0}
+  .glyph{
+    font-family:"JetBrains Mono",monospace;font-size:44px;line-height:1;
+    filter:blur(.4px);margin-bottom:26px;display:block;
+  }
+  .glyph::after{content:"";display:block}
+  .g1{color:var(--blue);text-shadow:0 0 26px currentColor}
+  .g2{color:var(--magenta);text-shadow:0 0 26px currentColor}
+  .g3{color:var(--teal);text-shadow:0 0 26px currentColor}
+  .g4{color:var(--amber);text-shadow:0 0 26px currentColor}
+  .step h3{font-size:16px;font-weight:600;letter-spacing:-.005em}
+  .step p{margin-top:7px;color:var(--ink-2);font-size:14px}
+  .num{position:absolute;top:22px;right:24px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3)}
+
+  /* ── TABLE ─────────────────────────────── */
+  .tbl-wrap{max-width:940px;margin:0 auto;padding:40px 24px 72px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{
+    text-align:left;font-family:"JetBrains Mono",monospace;font-weight:400;font-size:10.5px;
+    letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);
+    padding:0 12px 10px;border-bottom:1px solid var(--line);
+  }
+  td{padding:15px 12px;border-bottom:1px dashed var(--line)}
+  tbody tr{transition:background .15s}
+  tbody tr:hover{background:rgba(0,0,0,.025)}
+  .mono{font-family:"JetBrains Mono",monospace;font-size:13px}
+  .amt{font-weight:600}
+  .tx{color:var(--ink-3);font-size:12px;font-family:"JetBrains Mono",monospace}
+  .tx:hover{color:var(--accent)}
+  td .who{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
+
+  /* ── FAQ ───────────────────────────────── */
+  .faq-sec{display:grid;grid-template-columns:.85fr 1.15fr;gap:56px;max-width:1000px;margin:0 auto;padding:74px 24px 80px;align-items:start}
+  .faq-sec h2{text-align:left}
+  .faq-sec .lead{margin-top:12px;color:var(--ink-2);font-size:15px}
+  .mailto{
+    display:inline-flex;align-items:center;gap:9px;margin-top:22px;height:38px;padding:0 15px;
+    border-radius:19px;background:var(--ink);color:#fff;font-family:"JetBrains Mono",monospace;font-size:12px;
+  }
+  .acc{border:1px dashed var(--line-2);background:var(--panel);margin-bottom:8px}
+  .acc summary{
+    list-style:none;cursor:pointer;padding:17px 20px;display:flex;justify-content:space-between;
+    align-items:center;gap:16px;font-size:15px;font-weight:500;
+  }
+  .acc summary::-webkit-details-marker{display:none}
+  .acc summary::after{content:"+";font-family:"JetBrains Mono",monospace;color:var(--ink-3);font-size:16px;transition:.2s}
+  .acc[open] summary::after{transform:rotate(45deg)}
+  .acc p{padding:0 20px 18px;color:var(--ink-2);font-size:14px;max-width:92%}
+  .acc code{font-family:"JetBrains Mono",monospace;font-size:12px;background:rgba(0,0,0,.055);padding:2px 6px;border-radius:4px;word-break:break-all}
+
+  /* ── CTA BAND ──────────────────────────── */
+  .band{padding:78px 24px 84px;text-align:center}
+  .trust{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .trust div{
+    display:flex;align-items:center;gap:8px;border:1px dashed var(--line-2);background:var(--panel);
+    padding:9px 14px;font-size:13px;color:var(--ink-2);
+  }
+  .trust b{width:6px;height:6px;background:var(--ink);border-radius:1px;display:block}
+
+  /* ── FOOTER ────────────────────────────── */
+  footer{padding:44px 24px 26px;max-width:var(--maxw);margin:0 auto}
+  .f-top{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap}
+  .f-logo{display:flex;align-items:center;gap:9px;font-weight:600;font-size:14px}
+  .f-logo em{display:flex;gap:2.5px}
+  .f-logo i{width:6px;height:16px;background:var(--ink);border-radius:4px;display:block}
+  .f-desc{color:var(--ink-2);font-size:13px;max-width:290px;margin-top:12px}
+  .f-cols{display:flex;gap:56px;flex-wrap:wrap}
+  .f-col h4{font-size:13px;font-weight:600;margin-bottom:10px}
+  .f-col a{display:block;font-size:13px;color:var(--ink-2);margin-bottom:6px}
+  .f-col a:hover{color:var(--ink)}
+  .disc{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:11.5px;color:var(--ink-3);line-height:1.65;max-width:760px}
+  .copy{margin-top:14px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3)}
+
+  /* ── RESPONSIVE ────────────────────────── */
+  @media(max-width:860px){
+    .faq-sec{grid-template-columns:1fr;gap:28px}
+    .steps{grid-template-columns:1fr}
+    .steps .step{border:1px dashed var(--line-2)!important;border-bottom:0!important}
+    .steps .step:last-child{border-bottom:1px dashed var(--line-2)!important}
+    .stats{grid-template-columns:1fr}
+    .stat{border-right:0;border-bottom:1px dashed var(--line-2)}
+    .stat:last-child{border-bottom:0}
+    .nav-links{display:none}
+    .nav-in{justify-content:center}
+    .c-tl,.c-bl{left:3%}.c-tr,.c-br{right:3%}
+    .hide-sm{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-in">
+    <div class="nav-links">
+      <a class="nl" href="#how"><b>[</b>How it works<b>]</b></a>
+      <a class="nl" href="#raised"><b>[</b>Raised<b>]</b></a>
+    </div>
+    <a class="logo" href="#" aria-label="Cortical Fund"><i></i><i></i></a>
+    <div class="nav-links right">
+      <a class="nl" href="#ledger"><b>[</b>Ledger<b>]</b></a>
+      <a class="nl" href="#faq"><b>[</b>FAQ<b>]</b></a>
+    </div>
+  </div>
+</nav>
+
+<div class="frame">
+
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <div class="h-head">
+      <h1>Trading fees,<br><em>funding neurons.</em></h1>
+      <p class="sub">$CTX trades on-chain with a 1% pool fee. The fund's share of that fee is claimed and contributed directly to Cortical Labs — the lab growing living human neurons on silicon.</p>
+      <div class="cta">
+        <a class="btn btn-s" href="#how">How it works</a>
+        <a class="btn btn-p" href="#raised">See the ledger</a>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="corner c-tl"></div><div class="corner c-tr"></div>
+      <div class="corner c-bl"></div><div class="corner c-br"></div>
+      <pre id="ascii" aria-label="Animated neural network"></pre>
+    </div>
+  </section>
+
+  <!-- ══ MARQUEE ══ -->
+  <section class="mq">
+    <p class="mq-lab">Funding the frontier of biological computing</p>
+    <div class="mq-track" id="mqt"></div>
+  </section>
+
+  <!-- ══ COUNTER ══ -->
+  <section class="counter" id="raised">
+    <div class="tag"><span class="live"></span>LIVE · CLAIMED WEEKLY</div>
+    <div class="big" id="bigNum">$0</div>
+    <p class="big-sub">contributed to Cortical Labs since launch — every dollar sourced from pool fees, never from treasury sales.</p>
+
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="bar-lab">
+      <span id="barLeft">0% of next CL1</span>
+      <span>$35,000 — 1× CL1 unit</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b id="s1">$0</b><span>Total fees generated</span></div>
+      <div class="stat"><b id="s2">0</b><span>CL1 units funded</span></div>
+      <div class="stat"><b id="s3">0</b><span>Neuron-hours bought</span></div>
+    </div>
+  </section>
+
+  <!-- ══ HOW IT WORKS ══ -->
+  <div id="how">
+    <div class="head">
+      <div class="pill">MECHANISM</div>
+      <h2>Volume in. Neurons out.</h2>
+      <p>No pledges, no promises, no discretionary treasury. The contribution is a mechanical consequence of trading.</p>
+    </div>
+    <section>
+      <div class="steps">
+        <div class="step">
+          <span class="num">01</span>
+          <span class="glyph g1">&#8646;</span>
+          <h3>Someone trades $CTX</h3>
+          <p>Every swap carries a 1% pool fee. The launchpad splits it between the token's creator and the platform — the fund receives the creator's 70% share.</p>
+        </div>
+        <div class="step">
+          <span class="num">02</span>
+          <span class="glyph g2">&#9776;</span>
+          <h3>Fees accrue on-chain</h3>
+          <p>The creator share accumulates in a fee position no one can withdraw to a personal wallet. It sits in public view, block by block.</p>
+        </div>
+        <div class="step">
+          <span class="num">03</span>
+          <span class="glyph g3">&#8659;</span>
+          <h3>Claimed every Monday</h3>
+          <p>The position is claimed on a weekly cadence and converted to stablecoins. The claim transaction is posted in the ledger below.</p>
+        </div>
+        <div class="step">
+          <span class="num">04</span>
+          <span class="glyph g4">&#9673;</span>
+          <h3>Wired to Cortical Labs</h3>
+          <p>Funds are sent as an unrestricted research contribution — hardware, wetware consumables, and CL1 units for independent labs.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══ LEDGER ══ -->
+  <div id="ledger">
+    <div class="head">
+      <div class="pill">LEDGER</div>
+      <h2>Where every dollar lands.</h2>
+      <p>Each claim is published with its destination and transaction hash. Nothing is contributed that isn't first shown here.</p>
+    </div>
+    <section>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Destination</th>
+              <th>Amount</th>
+              <th class="hide-sm">Date</th>
+              <th style="text-align:right">Proof</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══ FAQ ══ -->
+  <section id="faq">
+    <div class="faq-sec">
+      <div>
+        <div class="pill">ANSWERS</div>
+        <h2>Before you buy.</h2>
+        <p class="lead">Plain answers, including the ones that don't help us. Read the risk section twice.</p>
+        <a class="mailto" href="mailto:hello@cortical.fund">hello@cortical.fund</a>
+      </div>
+      <div>
+        <details class="acc" open>
+          <summary>What is Cortical Fund?</summary>
+          <p>Cortical Fund is a token. Trading it generates pool fees, and the intent of this project is to periodically claim those fees and contribute them to Cortical Labs, the company building CL1 — a computer that runs on living human neurons cultured on a silicon chip.</p>
+        </details>
+        <details class="acc">
+          <summary>How do trading fees turn into contributions?</summary>
+          <p>Every trade carries a 1% pool fee, which the launchpad splits between the token's creator and the platform. The fund receives the creator's 70% share. That share is claimed weekly, converted to stablecoins, and wired out. The claim and the transfer are both published in the ledger.</p>
+        </details>
+        <details class="acc">
+          <summary>Why Cortical Labs?</summary>
+          <p>Because synthetic biological intelligence is one of the few compute frontiers that isn't already flooded with capital. Neurons learn from vastly less data and run on a fraction of the energy of silicon. Cortical Labs put the first commercial biological computer in the world on the market — that work deserves a funding stream that doesn't depend on a quarterly cycle.</p>
+        </details>
+        <details class="acc">
+          <summary>What are the risks of buying the token?</summary>
+          <p>The token can lose value, including all of its value. Buying it is not a donation, it is not tax-deductible, and it gives you no claim on the fund, on Cortical Labs, or on anything else. If fees stop, contributions stop. Assume you may lose everything you put in.</p>
+        </details>
+        <details class="acc">
+          <summary>Do holders receive anything in return?</summary>
+          <p>No. Holding $CTX does not entitle you to dividends, revenue share, redemption rights, equity, hardware, or any say in how the project is run. The only thing it produces is fees, and the fees are not yours.</p>
+        </details>
+        <details class="acc">
+          <summary>What is the contract address?</summary>
+          <p>$CTX is <code>0x0000000000000000000000000000000000000000</code>. Verify it against this page before trading — anything you find elsewhere is a fake.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CTA BAND ══ -->
+  <section class="band">
+    <h2>Turn volume into wetware.</h2>
+    <p class="sub" style="margin-top:14px">Trade it, hold it, or just watch the ledger. The neurons don't care which — they only see the wire transfer.</p>
+    <div class="cta">
+      <a class="btn btn-a" href="#">Buy $CTX</a>
+      <a class="btn btn-s" href="#ledger">Read the ledger</a>
+    </div>
+    <div class="trust">
+      <div><b></b>No presale, no team allocation</div>
+      <div><b></b>Fees claimed on a public schedule</div>
+      <div><b></b>Every transfer hash published</div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="f-top">
+    <div>
+      <div class="f-logo"><em><i></i><i></i></em> Cortical Fund</div>
+      <p class="f-desc">A fee-funded contribution stream for synthetic biological intelligence research.</p>
+    </div>
+    <div class="f-cols">
+      <div class="f-col">
+        <h4>Protocol</h4>
+        <a href="#how">How it works</a>
+        <a href="#raised">Raised</a>
+        <a href="#ledger">Ledger</a>
+      </div>
+      <div class="f-col">
+        <h4>Resources</h4>
+        <a href="#faq">FAQ</a>
+        <a href="https://corticallabs.com" target="_blank" rel="noopener">Cortical Labs</a>
+        <a href="mailto:hello@cortical.fund">Contact</a>
+      </div>
+    </div>
+  </div>
+  <p class="disc">
+    Cortical Fund is an independent project. It is not affiliated with, endorsed by, sponsored by, or operated by Cortical Labs Pty Ltd, and no partnership is implied. Contributions are made as unrestricted gifts and confer no rights over the recipient's research, hardware, or intellectual property. $CTX is not a security, an investment contract, a share of any fund, or a donation receipt. Nothing on this page is financial advice. Digital assets are volatile and you may lose the entirety of your funds.
+  </p>
+  <p class="copy">© 2026 CORTICAL FUND — BUILT FOR THE NEURONS.</p>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   CONFIG — edit these numbers, everything else follows
+   ════════════════════════════════════════════════════════ */
+const CFG = {
+  contributed : 128450,   // $ wired to Cortical Labs
+  feesTotal   : 141900,   // $ total pool fees generated
+  cl1Price    : 35000,    // $ per CL1 unit
+  neuronHour  : 0.42,     // $ per neuron-hour of compute
+  liveDrip    : true      // slow live increments
+};
+
+/* ── COUNT-UP ─────────────────────────────── */
+const money = n => "$" + Math.round(n).toLocaleString("en-US");
+const ease  = t => 1 - Math.pow(1 - t, 3);
+
+function countTo(el, target, dur, fmt){
+  const t0 = performance.now();
+  (function step(now){
+    const p = Math.min((now - t0) / dur, 1);
+    el.textContent = fmt(target * ease(p));
+    if (p < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+function paint(){
+  const units = Math.floor(CFG.contributed / CFG.cl1Price);
+  const pct   = ((CFG.contributed % CFG.cl1Price) / CFG.cl1Price) * 100;
+  document.getElementById("barFill").style.width = pct.toFixed(1) + "%";
+  document.getElementById("barLeft").textContent = pct.toFixed(0) + "% of next CL1";
+  return units;
+}
+
+const numEl = document.getElementById("bigNum");
+new IntersectionObserver((ent, obs) => {
+  if (!ent[0].isIntersecting) return;
+  obs.disconnect();
+  const units = paint();
+  countTo(numEl, CFG.contributed, 1700, money);
+  countTo(document.getElementById("s1"), CFG.feesTotal, 1700, money);
+  countTo(document.getElementById("s2"), units, 1400, v => Math.round(v));
+  countTo(document.getElementById("s3"), CFG.contributed / CFG.neuronHour, 1900,
+          v => Math.round(v).toLocaleString("en-US"));
+}, {threshold:.35}).observe(document.getElementById("raised"));
+
+if (CFG.liveDrip) setInterval(() => {
+  const bump = 3 + Math.random() * 26;
+  CFG.contributed += bump; CFG.feesTotal += bump * 1.1;
+  numEl.textContent = money(CFG.contributed);
+  document.getElementById("s1").textContent = money(CFG.feesTotal);
+  paint();
+}, 5200);
+
+/* ── MARQUEE ──────────────────────────────── */
+const TERMS = ["Cortical Labs CL1","Synthetic Biological Intelligence","Human cortical neurons",
+               "Wetware-as-a-Service","Free Energy Principle","Neural culture arrays",
+               "Biological compute","DishBrain lineage"];
+document.getElementById("mqt").innerHTML =
+  [...TERMS, ...TERMS].map(t => `<div class="mq-item"><span></span>${t}</div>`).join("");
+
+/* ── LEDGER ───────────────────────────────── */
+const ROWS = [
+  ["Cortical Labs — research contribution","$24,000","Jul 20, 2026","0x8f2a…c41d"],
+  ["CL1 unit · independent lab grant","$35,000","Jul 13, 2026","0x1b70…9ae2"],
+  ["Cortical Labs — research contribution","$18,500","Jul 06, 2026","0xd304…77f1"],
+  ["Wetware consumables · media + MEA","$9,450","Jun 29, 2026","0x5c98…0b3a"],
+  ["CL1 unit · independent lab grant","$35,000","Jun 22, 2026","0xa612…ff84"]
+];
+document.getElementById("ledgerBody").innerHTML = ROWS.map(r => `
+  <tr>
+    <td>${r[0]}<span class="who">Claimed from pool fees</span></td>
+    <td class="mono amt">${r[1]}</td>
+    <td class="mono hide-sm" style="color:var(--ink-3)">${r[2]}</td>
+    <td style="text-align:right"><a class="tx" href="#">${r[3]} &#8599;</a></td>
+  </tr>`).join("");
+
+/* ── ASCII NEURAL FIELD ───────────────────── */
+(function(){
+  const pre = document.getElementById("ascii");
+  const RAMP = " .:-=+*#%@";
+  const ASPECT = 0.5;                 // height / width of the art block
+  const N = [[.50,.25],[.30,.10],[.71,.09],[.16,.24],[.85,.23],[.33,.42],[.68,.43],
+             [.50,.03],[.50,.47],[.07,.14],[.93,.15],[.13,.40],[.88,.39],[.41,.19],[.61,.31]];
+  const E = [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,13],[0,14],[1,7],[2,7],[1,9],[2,10],
+             [3,9],[4,10],[3,11],[4,12],[5,11],[6,12],[5,8],[6,8],[1,3],[2,4],[13,1],[14,2]];
+  let cols = 0, rows = 0, W = 0;
+
+  function size(){
+    W = Math.min(pre.parentElement.clientWidth * .84, 760);
+    const ch = W < 480 ? 5 : 7;                       // px per char width
+    pre.style.fontSize = (ch / .6) + "px";
+    cols = Math.max(40, Math.floor(W / ch));
+    rows = Math.max(20, Math.round(cols * ch * ASPECT / (ch / .6)));
+  }
+
+  function frame(t){
+    const time = t * .001, out = [];
+    for (let y = 0; y < rows; y++){
+      let line = "";
+      for (let x = 0; x < cols; x++){
+        const px = x / cols, py = (y / rows) * ASPECT;
+        let v = 0;
+        for (let i = 0; i < N.length; i++){
+          const dx = px - N[i][0], dy = py - N[i][1];
+          const d2 = dx*dx + dy*dy;
+          const puls = i === 0 ? 1.9 : 1;
+          v += (.0009 * puls) / (d2 + .0006);
+        }
+        for (let k = 0; k < E.length; k++){
+          const a = N[E[k][0]], b = N[E[k][1]];
+          const vx = b[0]-a[0], vy = b[1]-a[1];
+          const L2 = vx*vx + vy*vy;
+          let u = ((px-a[0])*vx + (py-a[1])*vy) / L2;
+          u = u < 0 ? 0 : u > 1 ? 1 : u;
+          const ex = px - (a[0] + u*vx), ey = py - (a[1] + u*vy);
+          v += .00022 / (ex*ex + ey*ey + .00022);
+          const p  = ((time * .34 + k * .137) % 1);
+          const qx = px - (a[0] + p*vx), qy = py - (a[1] + p*vy);
+          v += .00055 / (qx*qx + qy*qy + .00035);
+        }
+        v *= .92 + .12 * Math.sin(time * 1.5 + px * 7 + py * 9);
+        v -= .14;                                   // clip the ambient haze
+        let i = Math.floor(v * RAMP.length);
+        line += RAMP[i > RAMP.length - 1 ? RAMP.length - 1 : (i < 0 ? 0 : i)];
+      }
+      out.push(line);
+    }
+    pre.textContent = out.join("\n");
+  }
+
+  let last = 0;
+  function loop(t){
+    if (t - last > 55){ last = t; frame(t); }
+    requestAnimationFrame(loop);
+  }
+  size(); requestAnimationFrame(loop);
+  addEventListener("resize", size);
+})();
+</script>
+</body>
+</html>
