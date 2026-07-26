@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cortical Fund — Trading fees, funding neurons.</title>
-<meta name="description" content="An independent protocol that routes on-chain trading fees directly into Cortical Labs — the lab growing living human neurons on silicon." />
+<title>Cortical Fund | Funding computers grown from living neurons</title>
+<meta name="description" content="An independent protocol that distributes on-chain trading fees to Cortical Labs, the company growing living human neurons on silicon." />
 <meta name="theme-color" content="#001321" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23001321'/%3E%3Cg fill='%23fff7d2'%3E%3Cpath d='M74 200 Q74 189 91 185 L149 171 Q167 166 175 149 L185 127 Q193 110 197 129 Q184 200 197 271 Q193 290 185 273 L175 251 Q167 234 149 229 L91 215 Q74 211 74 200 Z'/%3E%3Ccircle cx='229' cy='150' r='14'/%3E%3Ccircle cx='229' cy='200' r='21'/%3E%3Ccircle cx='229' cy='246' r='14'/%3E%3Ccircle cx='277' cy='152' r='9.5'/%3E%3Ccircle cx='277' cy='198' r='14'/%3E%3Ccircle cx='277' cy='245' r='9.5'/%3E%3Ccircle cx='323' cy='197' r='7'/%3E%3C/g%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,8 +13,8 @@
 <style>
   :root{
     color-scheme:dark;
-    --bg:#001321;                        /* deep navy — the only ground     */
-    --ink:#fff7d2;                       /* warm cream — the only ink       */
+    --bg:#001321;                        /* deep navy, the only ground     */
+    --ink:#fff7d2;                       /* warm cream, the only ink       */
     --panel:rgba(255,247,210,.035);
     --ink-2:rgba(255,247,210,.68);
     --ink-3:rgba(255,247,210,.46);
@@ -104,11 +104,6 @@
   section{border-bottom:1px solid var(--line);position:relative}
   .hero{min-height:74vh;display:flex;align-items:center;padding:104px 0 96px}
   .h-head{max-width:680px;margin:0 auto;text-align:center;padding:0 24px}
-  .eyebrow{
-    font-family:"JetBrains Mono",monospace;font-size:11px;
-    letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);
-    margin-bottom:26px;
-  }
   h1{
     font-family:"Instrument Serif",Georgia,serif;
     font-weight:400;font-size:clamp(38px,5.2vw,62px);
@@ -281,9 +276,8 @@
   <!-- ══ HERO ══ -->
   <section class="hero">
     <div class="h-head">
-      <p class="eyebrow">Fee-funded &middot; Claimed weekly &middot; Published in full</p>
       <h1>Funding computers grown from living neurons.</h1>
-      <p class="sub">A share of every $CTX trade is claimed on-chain and contributed to Cortical Labs, the company behind CL1 — the first commercial biological computer.</p>
+      <p class="sub">Trading fees are distributed to Cortical Labs.</p>
       <div class="cta">
         <a class="btn btn-s" href="#how">How it works</a>
         <a class="btn btn-p" href="#ledger">View the ledger</a>
@@ -294,12 +288,12 @@
   <!-- ══ COUNTER ══ -->
   <section class="counter" id="raised">
     <div class="big" id="bigNum">$0</div>
-    <p class="big-sub">contributed to Cortical Labs since launch — every dollar sourced from pool fees, never from treasury sales.</p>
+    <p class="big-sub">contributed to Cortical Labs since launch. Every dollar sourced from pool fees, never from treasury sales.</p>
 
     <div class="bar"><i id="barFill"></i></div>
     <div class="bar-lab">
       <span id="barLeft">0% of next CL1</span>
-      <span>$35,000 — 1× CL1 unit</span>
+      <span>$35,000 per CL1 unit</span>
     </div>
 
     <div class="stats">
@@ -322,7 +316,7 @@
           <span class="num">01</span>
           <span class="glyph g1">&#8646;</span>
           <h3>Someone trades $CTX</h3>
-          <p>Every swap carries a 1% pool fee. The launchpad splits it between the token's creator and the platform — the fund receives the creator's 70% share.</p>
+          <p>Every swap carries a 1% pool fee. The launchpad splits it between the token's creator and the platform. The fund receives the creator's 70% share.</p>
         </div>
         <div class="step">
           <span class="num">02</span>
@@ -340,7 +334,7 @@
           <span class="num">04</span>
           <span class="glyph g4">&#9673;</span>
           <h3>Wired to Cortical Labs</h3>
-          <p>Funds are sent as an unrestricted research contribution — hardware, wetware consumables, and CL1 units for independent labs.</p>
+          <p>Funds are sent as an unrestricted research contribution: hardware, wetware consumables, and CL1 units for independent labs.</p>
         </div>
       </div>
     </section>
@@ -382,7 +376,7 @@
       <div>
         <details class="acc" open>
           <summary>What is Cortical Fund?</summary>
-          <p>Cortical Fund is a token. Trading it generates pool fees, and the intent of this project is to periodically claim those fees and contribute them to Cortical Labs, the company building CL1 — a computer that runs on living human neurons cultured on a silicon chip.</p>
+          <p>Cortical Fund is a token. Trading it generates pool fees, and the intent of this project is to periodically claim those fees and contribute them to Cortical Labs, the company building CL1, a computer that runs on living human neurons cultured on a silicon chip.</p>
         </details>
         <details class="acc">
           <summary>How do trading fees turn into contributions?</summary>
@@ -390,7 +384,7 @@
         </details>
         <details class="acc">
           <summary>Why Cortical Labs?</summary>
-          <p>Because synthetic biological intelligence is one of the few compute frontiers that isn't already flooded with capital. Neurons learn from vastly less data and run on a fraction of the energy of silicon. Cortical Labs put the first commercial biological computer in the world on the market — that work deserves a funding stream that doesn't depend on a quarterly cycle.</p>
+          <p>Because synthetic biological intelligence is one of the few compute frontiers that isn't already flooded with capital. Neurons learn from vastly less data and run on a fraction of the energy of silicon. Cortical Labs put the first commercial biological computer in the world on the market. That work deserves a funding stream that doesn't depend on a quarterly cycle.</p>
         </details>
         <details class="acc">
           <summary>What are the risks of buying the token?</summary>
@@ -402,7 +396,7 @@
         </details>
         <details class="acc">
           <summary>What is the contract address?</summary>
-          <p>$CTX is <code>0x0000000000000000000000000000000000000000</code>. Verify it against this page before trading — anything you find elsewhere is a fake.</p>
+          <p>$CTX is <code>0x0000000000000000000000000000000000000000</code>. Verify it against this page before trading. Anything you find elsewhere is a fake.</p>
         </details>
       </div>
     </div>
@@ -411,7 +405,7 @@
   <!-- ══ CTA BAND ══ -->
   <section class="band">
     <h2>Turn volume into wetware.</h2>
-    <p class="sub" style="margin-top:14px">Trade it, hold it, or just watch the ledger. The neurons don't care which — they only see the wire transfer.</p>
+    <p class="sub" style="margin-top:14px">Trade it, hold it, or just watch the ledger. The neurons don't care which. They only see the wire transfer.</p>
     <div class="cta">
       <a class="btn btn-a" href="#">Buy $CTX</a>
       <a class="btn btn-s" href="#ledger">Read the ledger</a>
@@ -458,12 +452,12 @@
   <p class="disc">
     Cortical Fund is an independent project. It is not affiliated with, endorsed by, sponsored by, or operated by Cortical Labs Pty Ltd, and no partnership is implied. Contributions are made as unrestricted gifts and confer no rights over the recipient's research, hardware, or intellectual property. $CTX is not a security, an investment contract, a share of any fund, or a donation receipt. Nothing on this page is financial advice. Digital assets are volatile and you may lose the entirety of your funds.
   </p>
-  <p class="copy">© 2026 CORTICAL FUND — BUILT FOR THE NEURONS.</p>
+  <p class="copy">© 2026 CORTICAL FUND. BUILT FOR THE NEURONS.</p>
 </footer>
 
 <script>
 /* ════════════════════════════════════════════════════════
-   CONFIG — edit these numbers, everything else follows
+   CONFIG: edit these numbers, everything else follows
    ════════════════════════════════════════════════════════ */
 const CFG = {
   contributed : 128450,   // $ wired to Cortical Labs
@@ -516,9 +510,9 @@ if (CFG.liveDrip) setInterval(() => {
 
 /* ── LEDGER ───────────────────────────────── */
 const ROWS = [
-  ["Cortical Labs — research contribution","$24,000","Jul 20, 2026","0x8f2a…c41d"],
+  ["Cortical Labs research contribution","$24,000","Jul 20, 2026","0x8f2a…c41d"],
   ["CL1 unit · independent lab grant","$35,000","Jul 13, 2026","0x1b70…9ae2"],
-  ["Cortical Labs — research contribution","$18,500","Jul 06, 2026","0xd304…77f1"],
+  ["Cortical Labs research contribution","$18,500","Jul 06, 2026","0xd304…77f1"],
   ["Wetware consumables · media + MEA","$9,450","Jun 29, 2026","0x5c98…0b3a"],
   ["CL1 unit · independent lab grant","$35,000","Jun 22, 2026","0xa612…ff84"]
 ];
@@ -531,7 +525,7 @@ document.getElementById("ledgerBody").innerHTML = ROWS.map(r => `
   </tr>`).join("");
 
 /* ── SMOOTH SCROLL ────────────────────────────
-   wheel only — touch, keyboard and scrollbar drags stay native  */
+   wheel only: touch, keyboard and scrollbar drags stay native  */
 (function(){
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const S = {to: 0, at: 0, on: false};
@@ -570,7 +564,7 @@ document.getElementById("ledgerBody").innerHTML = ROWS.map(r => `
 
 /* ── REVEAL ON SCROLL ─────────────────────────*/
 (function(){
-  const SEL = "h1,.eyebrow,.sub,.cta,.big,.big-sub,.bar,.bar-lab,.stat,.pill,.head h2,.head p," +
+  const SEL = "h1,.sub,.cta,.big,.big-sub,.bar,.bar-lab,.stat,.pill,.head h2,.head p," +
               ".step,.tbl-wrap,.acc,.faq-sec h2,.faq-sec .lead,.mailto,.band h2," +
               ".trust div,.f-logo,.f-desc,.f-col,.disc,.copy";
   const els = [...document.querySelectorAll(SEL)];
