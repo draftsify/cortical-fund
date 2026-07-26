@@ -63,48 +63,7 @@
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
   .frame{border-left:1px solid var(--line);border-right:1px solid var(--line)}
 
-  /* ── AURORA ────────────────────────────────
-     five soft light pools drifting on incommensurate cycles, so the
-     composition never visibly repeats. no blur filter and no JS: each
-     pool is a gradient-painted layer moved by transform alone, which
-     the compositor handles on the GPU for free                     */
-  .aurora{position:fixed;inset:-25%;z-index:0;pointer-events:none;overflow:hidden}
-  .aurora i{position:absolute;display:block;border-radius:50%;will-change:transform}
-  .a1{width:80vmax;height:80vmax;left:-16%;top:-20%;
-      background:radial-gradient(circle,rgba(255,247,210,.19),rgba(255,247,210,0) 66%);
-      animation:dr1 38s ease-in-out infinite}
-  .a2{width:64vmax;height:64vmax;right:-12%;top:-8%;
-      background:radial-gradient(circle,rgba(255,247,210,.14),rgba(255,247,210,0) 64%);
-      animation:dr2 47s ease-in-out infinite}
-  .a3{width:72vmax;height:72vmax;left:16%;bottom:-26%;
-      background:radial-gradient(circle,rgba(255,247,210,.12),rgba(255,247,210,0) 65%);
-      animation:dr3 41s ease-in-out infinite}
-  .a4{width:48vmax;height:48vmax;left:36%;top:14%;
-      background:radial-gradient(circle,rgba(255,247,210,.17),rgba(255,247,210,0) 62%);
-      animation:dr4 33s ease-in-out infinite}
-  .a5{width:58vmax;height:58vmax;right:4%;bottom:-16%;
-      background:radial-gradient(circle,rgba(255,247,210,.10),rgba(255,247,210,0) 66%);
-      animation:dr5 55s ease-in-out infinite}
-  @keyframes dr1{0%,100%{transform:translate(0,0) scale(1)}
-                 34%{transform:translate(15vw,13vh) scale(1.18)}
-                 67%{transform:translate(-7vw,24vh) scale(.88)}}
-  @keyframes dr2{0%,100%{transform:translate(0,0) scale(1)}
-                 30%{transform:translate(-19vw,16vh) scale(.86)}
-                 65%{transform:translate(-9vw,-11vh) scale(1.22)}}
-  @keyframes dr3{0%,100%{transform:translate(0,0) scale(1)}
-                 38%{transform:translate(21vw,-18vh) scale(1.14)}
-                 72%{transform:translate(6vw,-6vh) scale(.9)}}
-  @keyframes dr4{0%,100%{transform:translate(0,0) scale(1)}
-                 29%{transform:translate(-14vw,20vh) scale(1.26)}
-                 63%{transform:translate(18vw,7vh) scale(.84)}}
-  @keyframes dr5{0%,100%{transform:translate(0,0) scale(1)}
-                 41%{transform:translate(-23vw,-14vh) scale(1.1)}
-                 76%{transform:translate(-5vw,-24vh) scale(.92)}}
-  @media(prefers-reduced-motion:reduce){.aurora i{animation:none}}
-
   nav,.frame,footer{position:relative;z-index:1}
-  /* content floats over the light — the hero stays clear so it reads through */
-  .counter,#how,#ledger,#faq,.band,footer{background:rgba(0,19,33,.88)}
 
   /* ── REVEAL ────────────────────────────── */
   [data-rv]{
@@ -143,22 +102,20 @@
 
   /* ── HERO ──────────────────────────────── */
   section{border-bottom:1px solid var(--line);position:relative}
-  .hero{min-height:76vh;display:flex;align-items:center;padding:104px 0 96px}
-  .h-head{max-width:640px;margin:0 auto;text-align:center;padding:0 24px;position:relative}
-  /* settles the light behind the headline so the type keeps its contrast */
-  .h-head::before{
-    content:"";position:absolute;inset:-28% -34%;z-index:-1;
-    background:radial-gradient(ellipse at center,
-      rgba(0,19,33,.72) 0%, rgba(0,19,33,.52) 45%, rgba(0,19,33,0) 74%);
+  .hero{min-height:74vh;display:flex;align-items:center;padding:104px 0 96px}
+  .h-head{max-width:680px;margin:0 auto;text-align:center;padding:0 24px}
+  .eyebrow{
+    font-family:"JetBrains Mono",monospace;font-size:11px;
+    letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);
+    margin-bottom:26px;
   }
   h1{
     font-family:"Instrument Serif",Georgia,serif;
-    font-weight:400;font-size:clamp(44px,6.4vw,74px);
-    line-height:1.02;letter-spacing:-.012em;
+    font-weight:400;font-size:clamp(38px,5.2vw,62px);
+    line-height:1.09;letter-spacing:-.015em;
   }
-  h1 em{font-style:italic}
-  .sub{margin-top:18px;color:var(--ink-2);font-size:15.5px;max-width:470px;margin-left:auto;margin-right:auto}
-  .cta{display:flex;gap:9px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+  .sub{margin-top:20px;color:var(--ink-2);font-size:16px;max-width:520px;margin-left:auto;margin-right:auto}
+  .cta{display:flex;gap:9px;justify-content:center;margin-top:32px;flex-wrap:wrap}
   .btn{
     display:inline-flex;align-items:center;gap:8px;
     height:38px;padding:0 17px;border-radius:19px;
@@ -294,11 +251,6 @@
 </head>
 <body>
 
-<!-- ══ AURORA ══ -->
-<div class="aurora" aria-hidden="true">
-  <i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i><i class="a5"></i>
-</div>
-
 <!-- ══ GRAIN ══ -->
 <div class="grain" aria-hidden="true"></div>
 
@@ -329,11 +281,12 @@
   <!-- ══ HERO ══ -->
   <section class="hero">
     <div class="h-head">
-      <h1>Trading fees,<br><em>funding neurons.</em></h1>
-      <p class="sub">$CTX trades on-chain with a 1% pool fee. The fund's share of that fee is claimed and contributed directly to Cortical Labs — the lab growing living human neurons on silicon.</p>
+      <p class="eyebrow">Fee-funded &middot; Claimed weekly &middot; Published in full</p>
+      <h1>Funding computers grown from living neurons.</h1>
+      <p class="sub">A share of every $CTX trade is claimed on-chain and contributed to Cortical Labs, the company behind CL1 — the first commercial biological computer.</p>
       <div class="cta">
         <a class="btn btn-s" href="#how">How it works</a>
-        <a class="btn btn-p" href="#raised">See the ledger</a>
+        <a class="btn btn-p" href="#ledger">View the ledger</a>
       </div>
     </div>
   </section>
@@ -617,7 +570,7 @@ document.getElementById("ledgerBody").innerHTML = ROWS.map(r => `
 
 /* ── REVEAL ON SCROLL ─────────────────────────*/
 (function(){
-  const SEL = "h1,.sub,.cta,.big,.big-sub,.bar,.bar-lab,.stat,.pill,.head h2,.head p," +
+  const SEL = "h1,.eyebrow,.sub,.cta,.big,.big-sub,.bar,.bar-lab,.stat,.pill,.head h2,.head p," +
               ".step,.tbl-wrap,.acc,.faq-sec h2,.faq-sec .lead,.mailto,.band h2," +
               ".trust div,.f-logo,.f-desc,.f-col,.disc,.copy";
   const els = [...document.querySelectorAll(SEL)];
