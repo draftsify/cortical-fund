@@ -275,7 +275,7 @@
         Cortical Fund
       </div>
       <p class="f-desc">A fee-funded contribution stream for synthetic biological intelligence research.</p>
-      <p class="f-ca">$CTX <code>0x0000000000000000000000000000000000000000</code></p>
+      <p class="f-ca">$CLF <code>0x0000000000000000000000000000000000000000</code></p>
     </div>
     <div class="f-cols">
       <div class="f-col">
@@ -294,7 +294,7 @@
     </div>
   </div>
   <p class="disc">
-    Cortical Fund is an independent project. It is not affiliated with, endorsed by, sponsored by, or operated by Cortical Labs Pty Ltd, and no partnership is implied. Contributions are made as unrestricted gifts and confer no rights over the recipient's research, hardware, or intellectual property. $CTX is not a security, an investment contract, a share of any fund, or a donation receipt. Nothing on this page is financial advice. Digital assets are volatile and you may lose the entirety of your funds.
+    Cortical Fund is an independent project. It is not affiliated with, endorsed by, sponsored by, or operated by Cortical Labs Pty Ltd, and no partnership is implied. Contributions are made as unrestricted gifts and confer no rights over the recipient's research, hardware, or intellectual property. $CLF is not a security, an investment contract, a share of any fund, or a donation receipt. Nothing on this page is financial advice. Digital assets are volatile and you may lose the entirety of your funds.
   </p>
   <p class="copy">© 2026 CORTICAL FUND. BUILT FOR THE NEURONS.</p>
 </footer>
@@ -319,7 +319,7 @@ const CFG = {
    ════════════════════════════════════════════════════════ */
 const CHAIN = {
   rpc          : "",      // e.g. "https://mainnet.base.org"
-  pool         : "",      // the $CTX pool address
+  pool         : "",      // the $CLF pool address
   poolType     : "v3",    // "v3" (uniswap v3 / v4-style) or "v2"
   quoteIsToken0: false,   // true if the stablecoin/WETH side is token0
   quoteDecimals: 6,       // USDC 6, WETH 18
@@ -386,7 +386,7 @@ new IntersectionObserver((ent, obs) => {
    revisit only scans the blocks minted since last time.        */
 const V2_SWAP = "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822";
 const V3_SWAP = "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67";
-const STORE   = "ctxVolume.v1";
+const STORE   = "clfVolume.v1";
 
 async function call(method, params){
   const r = await fetch(CHAIN.rpc, {
