@@ -110,20 +110,10 @@
 
   /* ── HERO ──────────────────────────────── */
   section{border-bottom:1px solid var(--line);position:relative}
-  .hero{min-height:74vh;display:flex;align-items:center;padding:104px 0 96px;overflow:hidden}
-  /* the culture plate is already navy and cream, so it needs no tinting.
-     the scrim only sinks it behind the type and dissolves its edges  */
-  .hero-bg{position:absolute;inset:0;z-index:0;line-height:0}
-  .hero-bg img{width:100%;height:100%;object-fit:cover;object-position:50% 45%;opacity:.62}
-  .hero-bg::after{
-    content:"";position:absolute;inset:0;
-    background:
-      radial-gradient(ellipse 62% 60% at 50% 50%,
-        rgba(0,19,33,.93) 0%, rgba(0,19,33,.66) 48%, rgba(0,19,33,.18) 100%),
-      linear-gradient(180deg,
-        var(--bg) 0%, rgba(0,19,33,.30) 16%, rgba(0,19,33,.30) 74%, var(--bg) 100%);
-  }
-  .h-head{max-width:680px;margin:0 auto;text-align:center;padding:0 24px;position:relative;z-index:1}
+  .hero{min-height:74vh;display:flex;align-items:center;padding:104px 0 96px}
+  /* the parallax lag is written straight to .transform by the scroller,
+     so it must not carry a transition that would fight the frame rate */
+  .h-head{max-width:680px;margin:0 auto;text-align:center;padding:0 24px;will-change:transform,opacity}
   h1{
     font-family:"Instrument Serif",Georgia,serif;
     font-weight:400;font-size:clamp(38px,5.2vw,62px);
@@ -239,9 +229,6 @@
 
   <!-- ══ HERO ══ -->
   <section class="hero">
-    <div class="hero-bg" aria-hidden="true">
-      <img src="neurons.png" alt="" width="2752" height="1536" fetchpriority="high" decoding="async" />
-    </div>
     <div class="h-head">
       <h1>Funding computers grown from living neurons.</h1>
       <p class="sub">Trading fees are distributed to Cortical Labs.</p>
@@ -475,7 +462,7 @@ if (CFG.liveDrip) setInterval(() => {
   const cap = () => Math.max(0, document.documentElement.scrollHeight - innerHeight);
 
   function run(){
-    S.at += (S.to - S.at) * .12;
+    S.at += (S.to - S.at) * .085;              // longer glide than a raw wheel
     if (Math.abs(S.to - S.at) < .4){ S.at = S.to; S.on = false; scrollTo(0, S.at); return; }
     scrollTo(0, S.at);
     requestAnimationFrame(run);
@@ -503,6 +490,29 @@ if (CFG.liveDrip) setInterval(() => {
     arm();
     S.to = Math.max(0, Math.min(cap(), el.getBoundingClientRect().top + scrollY - 66));
   }));
+})();
+
+/* ── HERO PARALLAX ────────────────────────────
+   the headline lags the page and dissolves as it leaves, which is what
+   makes the damped scroll legible instead of merely felt         */
+(function(){
+  const head = document.querySelector(".h-head");
+  if (!head || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let queued = false;
+
+  function frame(){
+    queued = false;
+    const y = scrollY, span = innerHeight * .85;
+    const p = y > span ? 1 : y / span;
+    head.style.transform = "translate3d(0," + (y * .24).toFixed(1) + "px,0)";
+    head.style.opacity   = (1 - p * p * .95).toFixed(3);
+  }
+  addEventListener("scroll", () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(frame);
+  }, {passive:true});
+  frame();                                   // browsers can restore a scroll position
 })();
 
 /* ── REVEAL ON SCROLL ─────────────────────────*/
