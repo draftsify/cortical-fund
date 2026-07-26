@@ -169,23 +169,6 @@
   .step p{margin-top:7px;color:var(--ink-2);font-size:14px}
   .num{position:absolute;top:22px;right:24px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3)}
 
-  /* ── TABLE ─────────────────────────────── */
-  .tbl-wrap{max-width:940px;margin:0 auto;padding:40px 24px 72px}
-  table{width:100%;border-collapse:collapse;font-size:14px}
-  th{
-    text-align:left;font-family:"JetBrains Mono",monospace;font-weight:400;font-size:10.5px;
-    letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);
-    padding:0 12px 10px;border-bottom:1px solid var(--line);
-  }
-  td{padding:15px 12px;border-bottom:1px dashed var(--line)}
-  tbody tr{transition:background .15s}
-  tbody tr:hover{background:rgba(255,247,210,.04)}
-  .mono{font-family:"JetBrains Mono",monospace;font-size:13px}
-  .amt{font-weight:600}
-  .tx{color:var(--ink-3);font-size:12px;font-family:"JetBrains Mono",monospace}
-  .tx:hover{color:var(--ink)}
-  td .who{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
-
   /* ── FAQ ───────────────────────────────── */
   .faq-sec{display:grid;grid-template-columns:.85fr 1.15fr;gap:56px;max-width:1000px;margin:0 auto;padding:74px 24px 80px;align-items:start}
   .faq-sec h2{text-align:left}
@@ -239,8 +222,6 @@
     .stat:last-child{border-bottom:0}
     .nav-links{display:none}
     .nav-in{justify-content:center}
-    .c-tl,.c-bl{left:3%}.c-tr,.c-br{right:3%}
-    .hide-sm{display:none}
   }
 </style>
 </head>
@@ -265,7 +246,6 @@
       </svg>
     </a>
     <div class="nav-links right">
-      <a class="nl" href="#ledger"><b>[</b>Ledger<b>]</b></a>
       <a class="nl" href="#faq"><b>[</b>FAQ<b>]</b></a>
     </div>
   </div>
@@ -279,8 +259,7 @@
       <h1>Funding computers grown from living neurons.</h1>
       <p class="sub">Trading fees are distributed to Cortical Labs.</p>
       <div class="cta">
-        <a class="btn btn-s" href="#how">How it works</a>
-        <a class="btn btn-p" href="#ledger">View the ledger</a>
+        <a class="btn btn-p" href="#how">How it works</a>
       </div>
     </div>
   </section>
@@ -328,7 +307,7 @@
           <span class="num">03</span>
           <span class="glyph g3">&#8659;</span>
           <h3>Claimed every Monday</h3>
-          <p>The position is claimed on a weekly cadence and converted to stablecoins. The claim transaction is posted in the ledger below.</p>
+          <p>The position is claimed on a weekly cadence and converted to stablecoins. Every claim settles as a public transaction on-chain.</p>
         </div>
         <div class="step">
           <span class="num">04</span>
@@ -336,30 +315,6 @@
           <h3>Wired to Cortical Labs</h3>
           <p>Funds are sent as an unrestricted research contribution: hardware, wetware consumables, and CL1 units for independent labs.</p>
         </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ══ LEDGER ══ -->
-  <div id="ledger">
-    <div class="head">
-      <div class="pill">LEDGER</div>
-      <h2>Where every dollar lands.</h2>
-      <p>Each claim is published with its destination and transaction hash. Nothing is contributed that isn't first shown here.</p>
-    </div>
-    <section>
-      <div class="tbl-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Destination</th>
-              <th>Amount</th>
-              <th class="hide-sm">Date</th>
-              <th style="text-align:right">Proof</th>
-            </tr>
-          </thead>
-          <tbody id="ledgerBody"></tbody>
-        </table>
       </div>
     </section>
   </div>
@@ -380,7 +335,7 @@
         </details>
         <details class="acc">
           <summary>How do trading fees turn into contributions?</summary>
-          <p>Every trade carries a 1% pool fee, which the launchpad splits between the token's creator and the platform. The fund receives the creator's 70% share. That share is claimed weekly, converted to stablecoins, and wired out. The claim and the transfer are both published in the ledger.</p>
+          <p>Every trade carries a 1% pool fee, which the launchpad splits between the token's creator and the platform. The fund receives the creator's 70% share. That share is claimed weekly, converted to stablecoins, and wired out. Both the claim and the transfer are visible on-chain.</p>
         </details>
         <details class="acc">
           <summary>Why Cortical Labs?</summary>
@@ -405,10 +360,10 @@
   <!-- ══ CTA BAND ══ -->
   <section class="band">
     <h2>Turn volume into wetware.</h2>
-    <p class="sub" style="margin-top:14px">Trade it, hold it, or just watch the ledger. The neurons don't care which. They only see the wire transfer.</p>
+    <p class="sub" style="margin-top:14px">Trade it, hold it, or ignore it. The neurons don't care which. They only see the wire transfer.</p>
     <div class="cta">
       <a class="btn btn-a" href="#">Buy $CTX</a>
-      <a class="btn btn-s" href="#ledger">Read the ledger</a>
+      <a class="btn btn-s" href="#faq">Read the FAQ</a>
     </div>
     <div class="trust">
       <div><b></b>No presale, no team allocation</div>
@@ -439,7 +394,6 @@
         <h4>Protocol</h4>
         <a href="#how">How it works</a>
         <a href="#raised">Raised</a>
-        <a href="#ledger">Ledger</a>
       </div>
       <div class="f-col">
         <h4>Resources</h4>
@@ -508,22 +462,6 @@ if (CFG.liveDrip) setInterval(() => {
   paint();
 }, 5200);
 
-/* ── LEDGER ───────────────────────────────── */
-const ROWS = [
-  ["Cortical Labs research contribution","$24,000","Jul 20, 2026","0x8f2a…c41d"],
-  ["CL1 unit · independent lab grant","$35,000","Jul 13, 2026","0x1b70…9ae2"],
-  ["Cortical Labs research contribution","$18,500","Jul 06, 2026","0xd304…77f1"],
-  ["Wetware consumables · media + MEA","$9,450","Jun 29, 2026","0x5c98…0b3a"],
-  ["CL1 unit · independent lab grant","$35,000","Jun 22, 2026","0xa612…ff84"]
-];
-document.getElementById("ledgerBody").innerHTML = ROWS.map(r => `
-  <tr>
-    <td>${r[0]}<span class="who">Claimed from pool fees</span></td>
-    <td class="mono amt">${r[1]}</td>
-    <td class="mono hide-sm" style="color:var(--ink-3)">${r[2]}</td>
-    <td style="text-align:right"><a class="tx" href="#">${r[3]} &#8599;</a></td>
-  </tr>`).join("");
-
 /* ── SMOOTH SCROLL ────────────────────────────
    wheel only: touch, keyboard and scrollbar drags stay native  */
 (function(){
@@ -565,7 +503,7 @@ document.getElementById("ledgerBody").innerHTML = ROWS.map(r => `
 /* ── REVEAL ON SCROLL ─────────────────────────*/
 (function(){
   const SEL = "h1,.sub,.cta,.big,.big-sub,.bar,.bar-lab,.stat,.pill,.head h2,.head p," +
-              ".step,.tbl-wrap,.acc,.faq-sec h2,.faq-sec .lead,.mailto,.band h2," +
+              ".step,.acc,.faq-sec h2,.faq-sec .lead,.mailto,.band h2," +
               ".trust div,.f-logo,.f-desc,.f-col,.disc,.copy";
   const els = [...document.querySelectorAll(SEL)];
   els.forEach(el => el.setAttribute("data-rv", ""));   // tagged in JS so a
