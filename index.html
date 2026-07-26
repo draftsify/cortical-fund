@@ -301,33 +301,22 @@
 
 <script>
 /* ════════════════════════════════════════════════════════
-   CONFIG: edit these numbers, everything else follows
+   CONFIG: the pool, and the cut of its volume the fund takes
    ════════════════════════════════════════════════════════ */
 const CFG = {
-  volumeUsd   : 0,        // nothing traded yet; the RPC overwrites this once live
-  poolFee     : 0.010,    // 1% pool fee
-  creatorCut  : 0.700,    // the fund receives 70% of it  ->  0.007 of volume
-  cl1Price    : 35000,    // $ per CL1 unit
-  neuronHour  : 0.42,     // $ per neuron-hour of compute
-  liveDrip    : false     // never invent movement the chain has not produced
+  volumeUsd  : 0,         // filled in from the chain below
+  poolFee    : 0.010,     // 1% pool fee
+  creatorCut : 0.700,     // the fund receives 70% of it  ->  0.007 of volume
+  cl1Price   : 35000,     // $ per CL1 unit
+  neuronHour : 0.42       // $ per neuron-hour of compute
 };
 
-/* ════════════════════════════════════════════════════════
-   CHAIN — fill these in and the counter goes live.
-   Leave `rpc` or `pool` empty and the fallback volume above
-   is used instead, so the page never shows a broken figure.
-   ════════════════════════════════════════════════════════ */
-const CHAIN = {
-  rpc          : "",      // e.g. "https://mainnet.base.org"
-  pool         : "",      // the $CLF pool address
-  poolType     : "v3",    // "v3" (uniswap v3 / v4-style) or "v2"
-  quoteIsToken0: false,   // true if the stablecoin/WETH side is token0
-  quoteDecimals: 6,       // USDC 6, WETH 18
-  quoteUsd     : 1,       // price of one quote token in $ (1 for a stablecoin)
-  fromBlock    : 0,       // block the pool was created in
-  chunkBlocks  : 9000,    // most public RPCs cap eth_getLogs around 10k blocks
-  maxCallsPerVisit: 40    // the cursor is saved, so a long history finishes
-};                        // across visits instead of hanging one page load
+const POOL = {
+  network : "robinhood",
+  pool    : "0x95feba3f0228f7dec814b16e1411ee616a66df41",   // CLF / WETH 1%
+  token   : "0x753049de92eb9d9525c21b74255ac4e65b0ed67a",
+  every   : 60000         // refresh cadence
+};
 
 const RATE = CFG.poolFee * CFG.creatorCut;      // 0.007 of volume
 
@@ -355,7 +344,6 @@ function paintBar(){
   $("barLeft").textContent = pct.toFixed(0) + "% of next CL1";
 }
 
-/* first reveal counts up; later updates just snap to the new figure */
 function render(animate){
   const c = contributed(), f = feesTotal();
   const units = Math.floor(c / CFG.cl1Price);
@@ -374,123 +362,54 @@ function render(animate){
   }
 }
 
-let revealed = false;
+/* count up once, when the block is both in view and carrying a figure */
+let inView = false, counted = false;
+function show(){
+  if (!inView) return;
+  const first = !counted && CFG.volumeUsd > 0;
+  if (first) counted = true;
+  render(first);
+}
+
 new IntersectionObserver((ent, obs) => {
   if (!ent[0].isIntersecting) return;
-  obs.disconnect(); revealed = true; render(true);
+  obs.disconnect(); inView = true; show();
 }, {threshold:.35}).observe($("raised"));
 
-/* ── ON-CHAIN VOLUME ──────────────────────────
-   walks Swap logs on the pool, sums the quote-token side, and lets
-   `contributed()` turn that into dollars. progress is cached, so a
-   revisit only scans the blocks minted since last time.        */
-const V2_SWAP = "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822";
-const V3_SWAP = "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67";
-const STORE   = "clfVolume.v1";
-
-async function call(method, params){
-  const r = await fetch(CHAIN.rpc, {
-    method : "POST",
-    headers: {"content-type": "application/json"},
-    body   : JSON.stringify({jsonrpc:"2.0", id:1, method, params})
-  });
+/* ── VOLUME ───────────────────────────────────
+   lifetime volume is the sum of every daily candle since the pool was
+   created, so the number can only climb. dexscreener's rolling 24h
+   window is the fallback: it is the wrong shape, but a stale-shaped
+   figure beats a blank one if geckoterminal is unreachable.     */
+async function lifetimeVolume(){
+  const u = "https://api.geckoterminal.com/api/v2/networks/" + POOL.network +
+            "/pools/" + POOL.pool + "/ohlcv/day?limit=1000";
+  const r = await fetch(u, {headers: {accept: "application/json"}});
+  if (!r.ok) throw new Error("geckoterminal " + r.status);
   const j = await r.json();
-  if (j.error) throw new Error(j.error.message || "rpc error");
-  return j.result;
+  const rows = j && j.data && j.data.attributes && j.data.attributes.ohlcv_list;
+  if (!Array.isArray(rows) || !rows.length) throw new Error("no candles");
+  return rows.reduce((s, c) => s + (Number(c[5]) || 0), 0);
 }
 
-/* uint256 / int256 words out of a log's data blob, as an absolute amount */
-function amountFrom(data){
-  const d = data.slice(2), word = i => d.slice(i * 64, i * 64 + 64);
-  const unit = Math.pow(10, CHAIN.quoteDecimals);
-  const abs  = hex => {
-    let v = BigInt("0x" + hex);
-    if (v >> 255n) v -= 1n << 256n;          // int256 two's complement
-    return v < 0n ? -v : v;
-  };
-  if (CHAIN.poolType === "v2"){              // amount0In,1In,0Out,1Out
-    const qIn  = CHAIN.quoteIsToken0 ? 0 : 1;
-    const qOut = CHAIN.quoteIsToken0 ? 2 : 3;
-    return (Number(abs(word(qIn))) + Number(abs(word(qOut)))) / unit;
-  }
-  return Number(abs(word(CHAIN.quoteIsToken0 ? 0 : 1))) / unit;   // v3 amount0/1
+async function windowVolume(){
+  const r = await fetch("https://api.dexscreener.com/latest/dex/tokens/" + POOL.token);
+  if (!r.ok) throw new Error("dexscreener " + r.status);
+  const j = await r.json();
+  const p = (j.pairs || []).find(x => (x.pairAddress || "").toLowerCase() === POOL.pool);
+  return Number(p && p.volume && p.volume.h24) || 0;
 }
 
-async function syncVolume(){
-  if (!CHAIN.rpc || !CHAIN.pool) return;     // not configured: keep the fallback
-  CFG.liveDrip = false;                      // never fake a number we can measure
-
-  let st;
-  try { st = JSON.parse(localStorage.getItem(STORE)); } catch (e) { st = null; }
-  if (!st || st.pool !== CHAIN.pool) st = {pool: CHAIN.pool, block: CHAIN.fromBlock, qty: 0};
-
-  const head  = parseInt(await call("eth_blockNumber", []), 16);
-  const topic = CHAIN.poolType === "v2" ? V2_SWAP : V3_SWAP;
-  let from = st.block, calls = 0;
-
-  while (from <= head && calls < CHAIN.maxCallsPerVisit){
-    const to = Math.min(from + CHAIN.chunkBlocks, head);
-    const logs = await call("eth_getLogs", [{
-      address  : CHAIN.pool,
-      fromBlock: "0x" + from.toString(16),
-      toBlock  : "0x" + to.toString(16),
-      topics   : [topic]
-    }]);
-    for (const l of logs) st.qty += amountFrom(l.data);
-
-    from = to + 1; calls++;
-    st.block = from;
-    try { localStorage.setItem(STORE, JSON.stringify(st)); } catch (e) {}
-
-    CFG.volumeUsd = st.qty * CHAIN.quoteUsd; // repaint as the scan progresses
-    if (revealed) render(false);
-  }
+async function refresh(){
+  let v = 0;
+  try { v = await lifetimeVolume(); }
+  catch (e) { try { v = await windowVolume(); } catch (e2) { return; } }
+  if (!(v > 0) || v === CFG.volumeUsd) return;
+  CFG.volumeUsd = v;
+  show();
 }
-
-syncVolume().catch(() => {});                // any failure leaves the fallback in place
-
-if (CFG.liveDrip) setInterval(() => {
-  CFG.volumeUsd += 400 + Math.random() * 3600;
-  if (revealed) render(false);
-}, 5200);
-
-/* ── SMOOTH SCROLL ────────────────────────────
-   wheel only: touch, keyboard and scrollbar drags stay native  */
-(function(){
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const S = {to: 0, at: 0, on: false};
-  const cap = () => Math.max(0, document.documentElement.scrollHeight - innerHeight);
-
-  function run(){
-    S.at += (S.to - S.at) * .085;              // longer glide than a raw wheel
-    if (Math.abs(S.to - S.at) < .4){ S.at = S.to; S.on = false; scrollTo(0, S.at); return; }
-    scrollTo(0, S.at);
-    requestAnimationFrame(run);
-  }
-  function arm(){                       // re-sync with wherever the page actually is
-    if (S.on) return;
-    S.to = S.at = scrollY; S.on = true;
-    requestAnimationFrame(run);
-  }
-
-  addEventListener("wheel", e => {
-    if (e.ctrlKey || e.defaultPrevented) return;
-    e.preventDefault();
-    arm();
-    const k = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1;
-    S.to = Math.max(0, Math.min(cap(), S.to + e.deltaY * k));
-  }, {passive:false});
-
-  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", e => {
-    const id = a.getAttribute("href");
-    if (id.length < 2) return;
-    const el = document.querySelector(id);
-    if (!el) return;
-    e.preventDefault();
-    arm();
-    S.to = Math.max(0, Math.min(cap(), el.getBoundingClientRect().top + scrollY - 66));
-  }));
-})();
+refresh();
+setInterval(refresh, POOL.every);
 
 /* ── HERO PARALLAX ────────────────────────────
    the headline lags the page and dissolves as it leaves, which is what
