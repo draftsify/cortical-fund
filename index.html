@@ -6,6 +6,7 @@
 <title>Cortical Fund — Trading fees, funding neurons.</title>
 <meta name="description" content="An independent protocol that routes on-chain trading fees directly into Cortical Labs — the lab growing living human neurons on silicon." />
 <meta name="theme-color" content="#001321" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23001321'/%3E%3Cg fill='%23fff7d2'%3E%3Cpath d='M74 200 Q74 189 91 185 L149 171 Q167 166 175 149 L185 127 Q193 110 197 129 Q184 200 197 271 Q193 290 185 273 L175 251 Q167 234 149 229 L91 215 Q74 211 74 200 Z'/%3E%3Ccircle cx='229' cy='150' r='14'/%3E%3Ccircle cx='229' cy='200' r='21'/%3E%3Ccircle cx='229' cy='246' r='14'/%3E%3Ccircle cx='277' cy='152' r='9.5'/%3E%3Ccircle cx='277' cy='198' r='14'/%3E%3Ccircle cx='277' cy='245' r='9.5'/%3E%3Ccircle cx='323' cy='197' r='7'/%3E%3C/g%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -98,15 +99,26 @@
   .nl{font-size:13px;color:var(--ink-2);transition:color .2s;white-space:nowrap}
   .nl:hover{color:var(--ink)}
   .nl b{font-family:"JetBrains Mono",monospace;font-weight:400;color:var(--ink-3);opacity:.55}
-  .logo{display:flex;gap:3px;align-items:center}
-  .logo i{display:block;width:8px;height:22px;background:var(--ink);border-radius:5px;animation:bar 2.6s ease-in-out infinite}
-  .logo i:nth-child(2){animation-delay:.35s}
-  @keyframes bar{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.62)}}
+  .logo{display:flex;align-items:center}
+  .mark{display:block;width:auto;fill:currentColor;color:var(--ink)}
+  .logo .mark{height:19px}
+  /* the mark's own dots fire outward, echoing the field behind the page */
+  .mark .e1{animation:emit 2.6s ease-in-out infinite}
+  .mark .e2{animation:emit 2.6s ease-in-out .22s infinite}
+  .mark .e3{animation:emit 2.6s ease-in-out .44s infinite}
+  @keyframes emit{0%,62%,100%{opacity:.55}18%{opacity:1}}
+  @media(prefers-reduced-motion:reduce){.mark .e1,.mark .e2,.mark .e3{animation:none;opacity:1}}
 
   /* ── HERO ──────────────────────────────── */
   section{border-bottom:1px solid var(--line);position:relative}
   .hero{min-height:76vh;display:flex;align-items:center;padding:104px 0 96px}
-  .h-head{max-width:640px;margin:0 auto;text-align:center;padding:0 24px}
+  .h-head{max-width:640px;margin:0 auto;text-align:center;padding:0 24px;position:relative}
+  /* pulls the field down behind the headline so the type stays crisp */
+  .h-head::before{
+    content:"";position:absolute;inset:-24% -30%;z-index:-1;
+    background:radial-gradient(ellipse at center,
+      rgba(0,19,33,.95) 0%, rgba(0,19,33,.86) 42%, rgba(0,19,33,0) 72%);
+  }
   h1{
     font-family:"Instrument Serif",Georgia,serif;
     font-weight:400;font-size:clamp(44px,6.4vw,74px);
@@ -221,9 +233,8 @@
   /* ── FOOTER ────────────────────────────── */
   footer{padding:44px 24px 26px;max-width:var(--maxw);margin:0 auto}
   .f-top{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap}
-  .f-logo{display:flex;align-items:center;gap:9px;font-weight:600;font-size:14px}
-  .f-logo em{display:flex;gap:2.5px}
-  .f-logo i{width:6px;height:16px;background:var(--ink);border-radius:4px;display:block}
+  .f-logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
+  .f-logo .mark{height:16px}
   .f-desc{color:var(--ink-2);font-size:13px;max-width:290px;margin-top:12px}
   .f-cols{display:flex;gap:56px;flex-wrap:wrap}
   .f-col h4{font-size:13px;font-weight:600;margin-bottom:10px}
@@ -264,7 +275,14 @@
       <a class="nl" href="#how"><b>[</b>How it works<b>]</b></a>
       <a class="nl" href="#raised"><b>[</b>Raised<b>]</b></a>
     </div>
-    <a class="logo" href="#" aria-label="Cortical Fund"><i></i><i></i></a>
+    <a class="logo" href="#" aria-label="Cortical Fund">
+      <svg class="mark" viewBox="62 100 280 200" role="img" aria-label="Cortical Fund">
+        <path d="M74 200 Q74 189 91 185 L149 171 Q167 166 175 149 L185 127 Q193 110 197 129 Q184 200 197 271 Q193 290 185 273 L175 251 Q167 234 149 229 L91 215 Q74 211 74 200 Z"/>
+        <g class="e1"><circle cx="229" cy="150" r="14"/><circle cx="229" cy="200" r="21"/><circle cx="229" cy="246" r="14"/></g>
+        <g class="e2"><circle cx="277" cy="152" r="9.5"/><circle cx="277" cy="198" r="14"/><circle cx="277" cy="245" r="9.5"/></g>
+        <g class="e3"><circle cx="323" cy="197" r="7"/></g>
+      </svg>
+    </a>
     <div class="nav-links right">
       <a class="nl" href="#ledger"><b>[</b>Ledger<b>]</b></a>
       <a class="nl" href="#faq"><b>[</b>FAQ<b>]</b></a>
@@ -424,7 +442,15 @@
 <footer>
   <div class="f-top">
     <div>
-      <div class="f-logo"><em><i></i><i></i></em> Cortical Fund</div>
+      <div class="f-logo">
+        <svg class="mark" viewBox="62 100 280 200" aria-hidden="true">
+          <path d="M74 200 Q74 189 91 185 L149 171 Q167 166 175 149 L185 127 Q193 110 197 129 Q184 200 197 271 Q193 290 185 273 L175 251 Q167 234 149 229 L91 215 Q74 211 74 200 Z"/>
+          <circle cx="229" cy="150" r="14"/><circle cx="229" cy="200" r="21"/><circle cx="229" cy="246" r="14"/>
+          <circle cx="277" cy="152" r="9.5"/><circle cx="277" cy="198" r="14"/><circle cx="277" cy="245" r="9.5"/>
+          <circle cx="323" cy="197" r="7"/>
+        </svg>
+        Cortical Fund
+      </div>
       <p class="f-desc">A fee-funded contribution stream for synthetic biological intelligence research.</p>
     </div>
     <div class="f-cols">
@@ -517,179 +543,160 @@ document.getElementById("ledgerBody").innerHTML = ROWS.map(r => `
     <td style="text-align:right"><a class="tx" href="#">${r[3]} &#8599;</a></td>
   </tr>`).join("");
 
-/* ── ASCII DENDRITIC BACKDROP ─────────────────
-   a full-viewport culture of procedurally grown cells                */
+/* ── ASCII BRAND FIELD ────────────────────────
+   the mark itself, at monumental scale: the emitter drives a decaying
+   electrode lattice, and pulses sweep outward through it, swelling
+   each site as they pass                                            */
 (function(){
   const pre  = document.getElementById("ascii");
   const RAMP = " .:-=+*#%@";
   const CALM = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* deterministic prng — the same culture is grown on every load */
-  let seed = 0;
-  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  /* the mark, in width-normalised units */
+  const XT = .045, XR = .225, HORN = .125, ROUND = .014;  // tip, right edge, spread
+  const BITE_C = .375, BITE_R = .175;                     // the concave notch
+  const EDGE = Math.hypot(XR - XT, HORN);
+  const SOFT = .0055;                                     // one character of feather
 
-  let cols = 0, rows = 0, SA = .5, base = null;   // SA = viewport height / width
-  const segs = [], somas = [], PULSE = [];
+  /* the pulse train leaving the emitter, plus a weaker return wave */
+  const P1 = 1.62, S1 = .40, W1 = .175;
+  const P2 = 2.71, S2 = .27, W2 = .205;
 
-  /* recursive branching: each branch is a short drifting walk, then it forks.
-     q is thickness relative to a primary — it drives brightness, not width  */
-  function grow(x, y, ang, len, depth, rad, q, trail, sink){
-    const STEPS = 4, sl = len / STEPS;
-    let cx = x, cy = y, a = ang;
-    const pts = [];
-    for (let i = 0; i < STEPS; i++){
-      a += (rnd() - .5) * .62;                       // organic drift
-      const nx = cx + Math.cos(a) * sl, ny = cy + Math.sin(a) * sl;
-      segs.push({ax:cx, ay:cy, bx:nx, by:ny, r: rad * (1 - .09 * i), q});
-      cx = nx; cy = ny; pts.push([cx, cy]);
-    }
-    const path = trail.concat(pts);
-    if (depth <= 0){ sink.push(path); return; }
-    const fork = .5 + rnd() * .55;
-    grow(cx, cy, a + fork, len*.7, depth-1, rad*.66, q*.66, path, sink);
-    grow(cx, cy, a - fork, len*.7, depth-1, rad*.66, q*.66, path, sink);
+  let cols = 0, rows = 0, SA = .5, yc = .25;
+  let wIdx = null, wVal = null;          // baked emitter coverage
+  let DOT = [], px = null;
+  const buf = [];
+
+  /* signed distance to the mark: a rounded triangle with a bite taken out */
+  function sdMark(x, y){
+    const dy = y - yc, ex = XR - XT, px_ = x - XT;
+    const top = -(ex * dy + HORN * px_) / EDGE;
+    const bot =  (ex * dy - HORN * px_) / EDGE;
+    const tri = Math.max(top, bot, x - XR) - ROUND;
+    return Math.max(tri, BITE_R - Math.hypot(x - BITE_C, dy));
   }
 
-  /* arc-length parameterisation so pulses move at a constant speed */
-  function route(pts){
-    const cum = [0];
-    for (let i = 1; i < pts.length; i++)
-      cum.push(cum[i-1] + Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]));
-    return {pts, cum, len: cum[cum.length - 1] || 1e-6};
-  }
-  function at(r, s){
-    const d = s * r.len, c = r.cum;
-    let i = 1; while (i < c.length - 1 && c[i] < d) i++;
-    const u = (d - c[i-1]) / (c[i] - c[i-1] || 1), a = r.pts[i-1], b = r.pts[i];
-    return [a[0] + (b[0]-a[0]) * u, a[1] + (b[1]-a[1]) * u];
-  }
-
-  /* one cell: soma, six dendrites, a wavy axon, a terminal arbor.
-     kept deliberately shallow — at this resolution detail reads as noise */
-  function neuron(cx, cy, sc, rot){
-    const dend = [], term = [];
-    for (let i = 0; i < 6; i++)
-      grow(cx, cy, rot + .90 + i * .75, .105*sc, 2, .0130*sc, 1, [[cx, cy]], dend);
-
-    const ca = Math.cos(rot), sa = Math.sin(rot), ax = [[cx, cy]];
-    for (let i = 1; i <= 24; i++){
-      const t = i / 24, u = t * .48*sc, w = Math.sin(t * 3.6) * .062*sc * (1 - t*.35);
-      const x = cx + ca*u - sa*w, y = cy + sa*u + ca*w;
-      segs.push({ax:ax[i-1][0], ay:ax[i-1][1], bx:x, by:y,
-                 r:(.0095 - t*.0030)*sc, q:.73 - t*.23});
-      ax.push([x, y]);
-    }
-    const tp = ax[ax.length - 1];
-    for (let i = 0; i < 3; i++)
-      grow(tp[0], tp[1], rot - .6 + i * .6, .058*sc, 1, .0075*sc, .58, ax.slice(), term);
-
-    somas.push([cx, cy, .020*sc]);
-
-    /* two spikes climbing the dendrites, one firing down the axon */
-    const spike = r => PULSE.push({
-      r, ph: rnd(), sp: (.11 + rnd()*.07) / sc,      // constant apparent speed
-      reach: .055*sc, den: .00040*sc*sc, gain: .00018*sc*sc
-    });
-    for (let i = 0; i < 2; i++)
-      spike(route(dend[Math.floor(i * dend.length / 2)].slice().reverse()));
-    spike(route(term[0]));
-  }
-
-  /* scatter a culture of cells across whatever viewport we were handed */
+  /* the lattice: sites thin out to the right and away from the axis,
+     exactly the way the mark's dots do                              */
   function layout(){
-    segs.length = somas.length = PULSE.length = 0;
-    seed = 0x6d2b79f5;
-    const unit = Math.min(1, SA), sc = unit * .56, step = unit * .58;
-    const nx = Math.max(1, Math.round(1 / step));
-    const ny = Math.max(1, Math.round(SA / step));
-    for (let j = 0; j < ny; j++)
-      for (let i = 0; i < nx; i++)
-        neuron((i + .5) / nx        + (rnd() - .5) * step * .40,
-               ((j + .5) / ny) * SA + (rnd() - .5) * step * .52,
-               sc * (.74 + rnd() * .46), rnd() * 6.283);
+    DOT = [];
+    yc = SA * .5;
+    const x0 = .30, d = .062;
+    const N  = Math.max(4, Math.ceil((1.04 - x0) / d));
+    const M  = 2 * Math.max(1, Math.floor(SA / (2 * d))) + 1;
+    const jc = (M - 1) / 2;
+    let s = 0x2f6b1d3;
+    const rnd = () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
+
+    for (let i = 0; i < N; i++){
+      const hx = Math.exp(-(i / (N - 1)) * 1.35);
+      for (let j = 0; j < M; j++){
+        const h = hx * Math.exp(-(Math.abs(j - jc) / jc) * 1.5);
+        const sx = x0 + i * d, sy = yc + (j - jc) * d;
+        DOT.push({
+          x: sx,
+          y: sy,
+          d: Math.hypot(sx - XR, sy - yc),   // range from the emitter mouth
+          r: .0110 * h + .0033,          // a site never quite disappears
+          g: .30 + .58 * h,
+          att: .38 + .62 * hx,            // distant sites still answer the pulse
+          jit: (rnd() - .5) * .026,       // ragged wavefront, not a metronome
+          ph: rnd() * 6.283
+        });
+      }
+    }
+  }
+
+  /* how hard a site sitting d away from the emitter mouth is being driven.
+     the front is a circle, not a plane, so the sweep bows outward the way
+     a real burst spreads through a culture                              */
+  const FAR = 1.35;
+  function drive(d, time){
+    let f = 0;
+    for (let k = -1; k <= 1; k++){
+      const n = Math.floor((time - d / S1) / P1) + k;
+      const r = S1 * (time - n * P1), df = Math.abs(d - r);
+      if (r >= 0 && r <= FAR && df < W1){ const u = 1 - df / W1; f += u * u; }
+    }
+    for (let k = -1; k <= 1; k++){        // the reflection, running back inward
+      const n = Math.floor((time - (FAR - d) / S2) / P2) + k;
+      const r = FAR - S2 * (time - n * P2), df = Math.abs(d - r);
+      if (r >= 0 && r <= FAR && df < W2){ const u = 1 - df / W2; f += .42 * u * u; }
+    }
+    return f;
   }
 
   function size(){
-    const ch = innerWidth < 620 ? 5.4 : 7.2, fs = ch / .6;   // px per character
+    const ch = innerWidth < 620 ? 6.2 : 8.4, fs = ch / .6;
     pre.style.fontSize = fs + "px";
     cols = Math.max(30, Math.ceil(innerWidth  / ch));
     rows = Math.max(20, Math.ceil(innerHeight / (fs * 1.02)));
     SA   = (rows * fs * 1.02) / (cols * ch);
-    layout(); bake();
+    px   = new Float32Array(cols * rows);
+    layout();
+    bakeMark();
   }
 
-  /* the geometry never moves — burn it into a buffer once per resize.
-     strokes are combined with max(), not sum, so crossings stay legible  */
-  function bake(){
-    base = new Float32Array(cols * rows);
-
-    /* a stroke has a hard edge at 1.7r and a quadratic falloff inside it,
-       which keeps hairline branches crisp instead of smearing into haze  */
-    const stroke = (ax, ay, bx, by, rad, gain) => {
-      const reach = Math.max(rad, 1.15 / cols) * 1.7, inv = 1 / reach;
-      const x0 = Math.max(0, ((Math.min(ax,bx) - reach) * cols) | 0);
-      const x1 = Math.min(cols-1, Math.ceil((Math.max(ax,bx) + reach) * cols));
-      const y0 = Math.max(0, ((Math.min(ay,by) - reach) / SA * rows) | 0);
-      const y1 = Math.min(rows-1, Math.ceil((Math.max(ay,by) + reach) / SA * rows));
-      const vx = bx - ax, vy = by - ay, L2 = vx*vx + vy*vy || 1e-9;
-      for (let y = y0; y <= y1; y++)
-        for (let x = x0; x <= x1; x++){
-          const px = x / cols, py = (y / rows) * SA;
-          let u = ((px - ax) * vx + (py - ay) * vy) / L2;
-          u = u < 0 ? 0 : u > 1 ? 1 : u;
-          const dx = px - (ax + u*vx), dy = py - (ay + u*vy);
-          const d = Math.sqrt(dx*dx + dy*dy);
-          if (d >= reach) continue;
-          const t = 1 - d * inv, v = gain * t * t;
-          const i = y * cols + x;
-          if (v > base[i]) base[i] = v;
-        }
-    };
-
-    /* thinner branches are dimmer — each arbor fades out toward its tips */
-    for (const s of segs)
-      stroke(s.ax, s.ay, s.bx, s.by, s.r, .22 + .42 * s.q);
-
-    for (const s of somas)                                    // cell bodies —
-      stroke(s[0], s[1], s[0], s[1],                          // never sub-character
-             Math.max(s[2], 2.1 / cols), 1.35);
+  /* the emitter never moves — burn its coverage into a sparse list once */
+  function bakeMark(){
+    const idx = [], val = [];
+    const x1 = Math.min(cols - 1, Math.ceil((XR + ROUND + SOFT) * cols));
+    const yA = Math.max(0, ((yc - HORN - ROUND - SOFT) / SA * rows) | 0);
+    const yB = Math.min(rows - 1, Math.ceil((yc + HORN + ROUND + SOFT) / SA * rows));
+    for (let y = yA; y <= yB; y++)
+      for (let x = 0; x <= x1; x++){
+        const c = -sdMark(x / cols, (y / rows) * SA) / SOFT;
+        if (c <= .02) continue;
+        idx.push(y * cols + x);
+        val.push(c > 1 ? 1 : c);
+      }
+    wIdx = Int32Array.from(idx);
+    wVal = Float32Array.from(val);
   }
 
-  const buf = [];
+  /* a site: quadratic falloff to a hard edge, so it reads as a round dot */
+  function site(cx, cy, rad, gain){
+    const reach = Math.max(rad, 1.05 / cols) * 1.75, inv = 1 / reach;
+    const x0 = Math.max(0, ((cx - reach) * cols) | 0);
+    const x1 = Math.min(cols - 1, Math.ceil((cx + reach) * cols));
+    const y0 = Math.max(0, ((cy - reach) / SA * rows) | 0);
+    const y1 = Math.min(rows - 1, Math.ceil((cy + reach) / SA * rows));
+    for (let y = y0; y <= y1; y++)
+      for (let x = x0; x <= x1; x++){
+        const dx = x / cols - cx, dy = (y / rows) * SA - cy;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d >= reach) continue;
+        const t = 1 - d * inv, v = gain * t * t, i = y * cols + x;
+        if (v > px[i]) px[i] = v;
+      }
+  }
+
   function frame(t){
     const time = t * .001;
-    const px = new Float32Array(base);                // start from the static cell
+    px.fill(0);
 
-    for (const p of PULSE){                           // paint the travelling spikes
-      const s = (time * p.sp + p.ph) % 1;
-      const step = .013 * (p.reach / .055) / p.r.len; // tail spacing in real distance
-      for (let k = 0; k < 3; k++){                    // head + comet tail
-        const u = s - k * step;
-        if (u < 0) continue;
-        const [hx, hy] = at(p.r, u), gain = Math.pow(.5, k) * p.gain;
-        const x0 = Math.max(0, ((hx - p.reach) * cols) | 0);
-        const x1 = Math.min(cols - 1, Math.ceil((hx + p.reach) * cols));
-        const y0 = Math.max(0, ((hy - p.reach) / SA * rows) | 0);
-        const y1 = Math.min(rows - 1, Math.ceil((hy + p.reach) / SA * rows));
-        for (let y = y0; y <= y1; y++)
-          for (let x = x0; x <= x1; x++){
-            const dx = x / cols - hx, dy = (y / rows) * SA - hy;
-            px[y * cols + x] += gain / (dx*dx + dy*dy + p.den);
-          }
-      }
+    /* the emitter flares as each pulse leaves it */
+    const fire = Math.max(0, 1 - (time % P1) / .24);
+    const wg = 1.02 + .38 * fire * fire;
+    for (let i = 0; i < wIdx.length; i++) px[wIdx[i]] = wVal[i] * wg;
+
+    for (const dt of DOT){
+      const f = drive(dt.d + dt.jit, time) * dt.att;
+      const breathe = .92 + .08 * Math.sin(time * .85 + dt.ph);
+      /* additive swell: every site gains the same absolute radius, so the
+         faint far sites erupt while the big near ones stay separated  */
+      site(dt.x, dt.y, dt.r + .018 * f, dt.g * breathe * (1 + 1.55 * f));
     }
 
     buf.length = 0;
     const L = RAMP.length - 1;
     for (let y = 0; y < rows; y++){
       let line = "";
-      const wob = time * 1.1 + y * .11;
       for (let x = 0; x < cols; x++){
-        const raw = px[y * cols + x];
-        if (raw < .09){ line += " "; continue; }       // ~85% of the grid, skipped
-        const v = raw * (.93 + .09 * Math.sin(wob + x * .05));   // slow breathing
+        const v = px[y * cols + x];
+        if (v < .1){ line += " "; continue; }
         const i = (v * RAMP.length) | 0;
-        line += RAMP[i > L ? L : (i < 0 ? 0 : i)];
+        line += RAMP[i > L ? L : i];
       }
       buf.push(line);
     }
