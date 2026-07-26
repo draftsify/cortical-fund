@@ -524,63 +524,171 @@ document.getElementById("ledgerBody").innerHTML = ROWS.map(r => `
     <td style="text-align:right"><a class="tx" href="#">${r[3]} &#8599;</a></td>
   </tr>`).join("");
 
-/* ── ASCII NEURAL FIELD ───────────────────── */
+/* ── ASCII DENDRITIC FIELD ────────────────── */
 (function(){
-  const pre = document.getElementById("ascii");
-  const RAMP = " .:-=+*#%@";
-  const ASPECT = 0.5;                 // height / width of the art block
-  const N = [[.50,.25],[.30,.10],[.71,.09],[.16,.24],[.85,.23],[.33,.42],[.68,.43],
-             [.50,.03],[.50,.47],[.07,.14],[.93,.15],[.13,.40],[.88,.39],[.41,.19],[.61,.31]];
-  const E = [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,13],[0,14],[1,7],[2,7],[1,9],[2,10],
-             [3,9],[4,10],[3,11],[4,12],[5,11],[6,12],[5,8],[6,8],[1,3],[2,4],[13,1],[14,2]];
-  let cols = 0, rows = 0, W = 0;
+  const pre    = document.getElementById("ascii");
+  const RAMP   = " .:-=+*#%@";
+  const ASPECT = .5;              // height / width of the art block
+  const SOMA   = [.28, .25];      // cell body, in width-normalised units
 
-  function size(){
-    W = Math.min(pre.parentElement.clientWidth * .84, 760);
-    const ch = W < 480 ? 5 : 7;                       // px per char width
-    pre.style.fontSize = (ch / .6) + "px";
-    cols = Math.max(40, Math.floor(W / ch));
-    rows = Math.max(20, Math.round(cols * ch * ASPECT / (ch / .6)));
+  /* deterministic prng — the same cell is grown on every load */
+  let seed = 0x6d2b79f5;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+
+  const segs  = [];   // {ax,ay,bx,by,r} — the static dendritic geometry
+  const dend  = [];   // tip-to-soma polylines (pulses travel inward)
+  const term  = [];   // soma-to-terminal polylines (pulses travel outward)
+
+  /* recursive branching: each branch is a short drifting walk, then it forks */
+  function grow(x, y, ang, len, depth, rad, trail, sink){
+    const STEPS = 4, sl = len / STEPS;
+    let cx = x, cy = y, a = ang;
+    const pts = [];
+    for (let i = 0; i < STEPS; i++){
+      a += (rnd() - .5) * .62;                       // organic drift
+      const nx = cx + Math.cos(a) * sl, ny = cy + Math.sin(a) * sl;
+      segs.push({ax:cx, ay:cy, bx:nx, by:ny, r: rad * (1 - .09 * i)});
+      cx = nx; cy = ny; pts.push([cx, cy]);
+    }
+    const path = trail.concat(pts);
+    if (depth <= 0){ sink.push(path); return; }
+    const fork = .5 + rnd() * .55;
+    grow(cx, cy, a + fork, len * .7, depth - 1, rad * .66, path, sink);
+    grow(cx, cy, a - fork, len * .7, depth - 1, rad * .66, path, sink);
   }
 
+  /* dendritic arbor — 5 primaries radiating out, leaving a gap for the axon.
+     kept deliberately shallow: at this resolution detail reads as noise    */
+  for (let i = 0; i < 6; i++)
+    grow(SOMA[0], SOMA[1], .90 + i * .75, .105, 2, .0130, [SOMA.slice()], dend);
+
+  /* axon — a long wavy process trailing off to the right */
+  const axon = [SOMA.slice()];
+  for (let i = 1; i <= 28; i++){
+    const t = i / 28, x = SOMA[0] + t * .56;
+    const y = SOMA[1] + Math.sin(t * 3.6) * .062 * (1 - t * .35);
+    segs.push({ax:axon[i-1][0], ay:axon[i-1][1], bx:x, by:y, r:.0095 - t * .0030});
+    axon.push([x, y]);
+  }
+  /* terminal arbor at the end of the axon */
+  const tip = axon[axon.length - 1];
+  for (let i = 0; i < 3; i++)
+    grow(tip[0], tip[1], -.6 + i * .6, .058, 1, .0075, axon.slice(), term);
+
+  /* arc-length parameterisation so pulses move at a constant speed */
+  function route(pts){
+    const cum = [0];
+    for (let i = 1; i < pts.length; i++){
+      const dx = pts[i][0] - pts[i-1][0], dy = pts[i][1] - pts[i-1][1];
+      cum.push(cum[i-1] + Math.hypot(dx, dy));
+    }
+    return {pts, cum, len: cum[cum.length - 1]};
+  }
+  function at(r, s){
+    const d = s * r.len, c = r.cum;
+    let i = 1; while (i < c.length - 1 && c[i] < d) i++;
+    const u = (d - c[i-1]) / (c[i] - c[i-1] || 1), a = r.pts[i-1], b = r.pts[i];
+    return [a[0] + (b[0]-a[0]) * u, a[1] + (b[1]-a[1]) * u];
+  }
+
+  /* action potentials: dendrites fire inward, axon fires outward.
+     routes are spread across the arbor so spikes never stack up      */
+  const PULSE = [];
+  for (let i = 0; i < 5; i++){
+    const p = dend[Math.floor(i * dend.length / 5)].slice().reverse();
+    PULSE.push({r: route(p), ph: rnd(), sp: .13 + rnd() * .07});
+  }
+  for (let i = 0; i < 2; i++)
+    PULSE.push({r: route(term[i % term.length]), ph: rnd(), sp: .10 + rnd() * .04});
+
+  let cols = 0, rows = 0, base = null;
+
+  function size(){
+    const W  = Math.min(pre.parentElement.clientWidth * .86, 800);
+    const ch = W < 470 ? 4.6 : 6.4;                  // px per character
+    pre.style.fontSize = (ch / .6) + "px";
+    cols = Math.max(44, Math.floor(W / ch));
+    rows = Math.max(22, Math.round(cols * ASPECT * .6));
+    bake();
+  }
+
+  /* the geometry never moves — burn it into a buffer once per resize.
+     strokes are combined with max(), not sum, so crossings stay legible  */
+  function bake(){
+    base = new Float32Array(cols * rows);
+
+    /* a stroke has a hard edge at 1.7r and a quadratic falloff inside it,
+       which keeps hairline branches crisp instead of smearing into haze  */
+    const stroke = (ax, ay, bx, by, rad, gain) => {
+      const reach = Math.max(rad, .95 / cols) * 1.7, inv = 1 / reach;
+      const x0 = Math.max(0, ((Math.min(ax,bx) - reach) * cols) | 0);
+      const x1 = Math.min(cols-1, Math.ceil((Math.max(ax,bx) + reach) * cols));
+      const y0 = Math.max(0, ((Math.min(ay,by) - reach) / ASPECT * rows) | 0);
+      const y1 = Math.min(rows-1, Math.ceil((Math.max(ay,by) + reach) / ASPECT * rows));
+      const vx = bx - ax, vy = by - ay, L2 = vx*vx + vy*vy || 1e-9;
+      for (let y = y0; y <= y1; y++)
+        for (let x = x0; x <= x1; x++){
+          const px = x / cols, py = (y / rows) * ASPECT;
+          let u = ((px - ax) * vx + (py - ay) * vy) / L2;
+          u = u < 0 ? 0 : u > 1 ? 1 : u;
+          const dx = px - (ax + u*vx), dy = py - (ay + u*vy);
+          const d = Math.sqrt(dx*dx + dy*dy);
+          if (d >= reach) continue;
+          const t = 1 - d * inv, v = gain * t * t;
+          const i = y * cols + x;
+          if (v > base[i]) base[i] = v;
+        }
+    };
+
+    /* thinner branches are dimmer — the arbor fades out toward its tips */
+    for (const s of segs)
+      stroke(s.ax, s.ay, s.bx, s.by, s.r, .22 + .42 * (s.r / .0130));
+
+    stroke(SOMA[0], SOMA[1], SOMA[0], SOMA[1], .020, 1.35);   // cell body
+  }
+
+  const buf = [];
   function frame(t){
-    const time = t * .001, out = [];
+    const time = t * .001;
+    const px = new Float32Array(base);                // start from the static cell
+
+    for (const p of PULSE){                           // paint the travelling spikes
+      const s = (time * p.sp + p.ph) % 1;
+      const step = .013 / p.r.len;                    // tail spacing in real distance
+      for (let k = 0; k < 3; k++){                    // head + comet tail
+        const u = s - k * step;
+        if (u < 0) continue;
+        const [hx, hy] = at(p.r, u), gain = Math.pow(.5, k) * .00018;
+        const x0 = Math.max(0, ((hx - .055) * cols) | 0);
+        const x1 = Math.min(cols - 1, Math.ceil((hx + .055) * cols));
+        const y0 = Math.max(0, ((hy - .055) / ASPECT * rows) | 0);
+        const y1 = Math.min(rows - 1, Math.ceil((hy + .055) / ASPECT * rows));
+        for (let y = y0; y <= y1; y++)
+          for (let x = x0; x <= x1; x++){
+            const dx = x / cols - hx, dy = (y / rows) * ASPECT - hy;
+            px[y * cols + x] += gain / (dx*dx + dy*dy + .00040);
+          }
+      }
+    }
+
+    buf.length = 0;
+    const L = RAMP.length - 1;
     for (let y = 0; y < rows; y++){
       let line = "";
       for (let x = 0; x < cols; x++){
-        const px = x / cols, py = (y / rows) * ASPECT;
-        let v = 0;
-        for (let i = 0; i < N.length; i++){
-          const dx = px - N[i][0], dy = py - N[i][1];
-          const d2 = dx*dx + dy*dy;
-          const puls = i === 0 ? 1.9 : 1;
-          v += (.0009 * puls) / (d2 + .0006);
-        }
-        for (let k = 0; k < E.length; k++){
-          const a = N[E[k][0]], b = N[E[k][1]];
-          const vx = b[0]-a[0], vy = b[1]-a[1];
-          const L2 = vx*vx + vy*vy;
-          let u = ((px-a[0])*vx + (py-a[1])*vy) / L2;
-          u = u < 0 ? 0 : u > 1 ? 1 : u;
-          const ex = px - (a[0] + u*vx), ey = py - (a[1] + u*vy);
-          v += .00022 / (ex*ex + ey*ey + .00022);
-          const p  = ((time * .34 + k * .137) % 1);
-          const qx = px - (a[0] + p*vx), qy = py - (a[1] + p*vy);
-          v += .00055 / (qx*qx + qy*qy + .00035);
-        }
-        v *= .92 + .12 * Math.sin(time * 1.5 + px * 7 + py * 9);
-        v -= .14;                                   // clip the ambient haze
-        let i = Math.floor(v * RAMP.length);
-        line += RAMP[i > RAMP.length - 1 ? RAMP.length - 1 : (i < 0 ? 0 : i)];
+        let v = px[y * cols + x];
+        v *= .93 + .09 * Math.sin(time * 1.1 + x * .05 + y * .11);   // slow breathing
+        let i = (v * RAMP.length) | 0;
+        line += RAMP[i > L ? L : (i < 0 ? 0 : i)];
       }
-      out.push(line);
+      buf.push(line);
     }
-    pre.textContent = out.join("\n");
+    pre.textContent = buf.join("\n");
   }
 
   let last = 0;
   function loop(t){
-    if (t - last > 55){ last = t; frame(t); }
+    if (t - last > 52){ last = t; frame(t); }
     requestAnimationFrame(loop);
   }
   size(); requestAnimationFrame(loop);
